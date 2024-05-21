@@ -37,11 +37,11 @@ const Navbar = () => {
                 <div className="flex items-center">
                     <NavLink href="/" isActive={pathname === "/"}>
                         <Image
-                            src={'/bookid.png'}
-                            alt="marmut logo"
-                            className="cursor-pointer hover:opacity-100"
-                            width={200}
-                            height={60}
+                            src={'/bookid.jpg'}
+                            alt="logo"
+                            className="cursor-pointer hover:opacity-100 border-none"
+                            width={220}
+                            height={80}
                         />
                     </NavLink>
                 </div>
