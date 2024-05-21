@@ -1,20 +1,31 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      backgroundColor: {
+        primary: "#FFFFFF",
       },
+      colors: {
+        white:{
+          100:'#FFFFFF'
+        },
+        blue:{
+          100: '#0060AE',
+        },
+        grey:{
+          100:'#6D6D6D',
+        },
+        black:{
+          100:'#151515'
+        },
+        purple:{
+          100:'#25225A'
+        },
+      }
     },
   },
-  plugins: [],
-};
-export default config;
+  plugins: [require('daisyui'),],
+}
