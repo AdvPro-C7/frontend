@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
@@ -34,6 +35,8 @@ const UserContext = createContext<User>({
   setState: () => {},
 });
 
+export const userContext = () => useContext(UserContext);
+
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -45,5 +48,3 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
     </UserContext.Provider>
   );
 };
-
-export default UserContext;

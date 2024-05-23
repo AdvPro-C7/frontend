@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useContext } from "react";
 import Image from "next/image";
-import UserContext from "./contexts/AuthContext";
+import { userContext } from "@/app/contexts/AuthContext";
 
 interface Book {
   coverImageUrl: string;
@@ -19,7 +19,7 @@ interface Book {
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
 
-  const { state } = useContext(UserContext);
+  const { state } = userContext();
   console.log(state["authenticated"]);
   useEffect(() => {
     fetch("http://localhost:8080/api/best-selling-books")

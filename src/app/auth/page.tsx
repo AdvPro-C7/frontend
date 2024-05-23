@@ -1,7 +1,8 @@
 "use client";
-import React, { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useContext, useEffect, useState } from "react";
 import sha56 from "crypto-js/sha256";
-import UserContext from "../contexts/AuthContext";
+import { userContext } from "@/app/contexts/AuthContext";
 
 const authServerDomain = "https://auth-b4rcuut5xa-ew.a.run.app";
 
@@ -42,7 +43,8 @@ interface RegistrationFormValues {
 }
 
 export default function authPage() {
-  const { state, setState } = useContext(UserContext);
+  const { state, setState } = userContext();
+  const router = useRouter();
 
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
     try {
@@ -61,13 +63,12 @@ export default function authPage() {
         togglePopUp(body.message);
 
         if (endpoint == "/login") {
-          setState((prevState) => ({
-            ...prevState,
-            ["authenticated"]: true,
-          }));
-          console.log(state["authenticated"]);
+          const modifiedState = { ...state };
+          modifiedState.authenticated = true;
 
-          window.location.href = "/";
+          setState(modifiedState);
+
+          router.push("/");
         }
       } else {
         togglePopUp(body.message || "An error occurred.");

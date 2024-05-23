@@ -1,10 +1,10 @@
 "use client";
-import React, { useContext } from "react";
-
-import UserContext, { nullUser } from "@/app/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { userContext, nullUser } from "@/app/contexts/AuthContext";
 
 const LogoutButton = () => {
-  const { setState } = useContext(UserContext);
+  const router = useRouter();
+  const { setState } = userContext();
 
   const logout = () => {
     var cookies = document.cookie.split(";");
@@ -16,9 +16,9 @@ const LogoutButton = () => {
       document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
 
-    setState(() => nullUser);
+    setState(nullUser);
 
-    window.location.href = "/auth";
+    router.push("/auth");
   };
 
   return (
