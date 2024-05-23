@@ -16,11 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={nunito.className}>
+      <body  className={nunito.className}>
 
         <Navbar />
-        {children}
-
+       <main className="bg-primary min-h-screen">{children}</main>
       </body>
     </html>
   );
