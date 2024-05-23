@@ -19,7 +19,8 @@ export default function RootLayout({
       <body  className={nunito.className}>
 
         <Navbar />
-       <main className="bg-primary min-h-screen">{children}</main>
+       <main className="bg-primary min-h-screen">
+        {children}</main>
       </body>
     </html>
   );
