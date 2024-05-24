@@ -7,7 +7,7 @@ type User = {
     sex: "" | "male" | "female";
     photoLink: string;
     email: string;
-    telpNum: string;
+    phoneNum: string;
     birthDate: string;
     bio: string;
     warningCount: number;
@@ -22,7 +22,7 @@ export const nullUser: User["state"] = {
   sex: "",
   photoLink: "",
   email: "",
-  telpNum: "",
+  phoneNum: "",
   birthDate: "",
   bio: "",
   warningCount: 0,

@@ -64,6 +64,15 @@ export default function authPage() {
 
         if (endpoint == "/login") {
           const modifiedState = { ...state };
+          modifiedState.name = body.user.nama;
+          modifiedState.sex = body.user.jenisKelamin;
+          modifiedState.photoLink = body.user.foto;
+          modifiedState.email = body.user.email;
+          modifiedState.phoneNum = body.user.noTelp;
+          modifiedState.birthDate = body.user.tanggalLahir;
+          modifiedState.bio = body.user.bio;
+          modifiedState.warningCount = body.user.jumlahPeringatan;
+          modifiedState.role = body.user.role;
           modifiedState.authenticated = true;
 
           setState(modifiedState);
