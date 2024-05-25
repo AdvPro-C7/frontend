@@ -214,10 +214,10 @@ const PopUpFormAddBook: React.FC<PopupFormProps> = ({ onClose, onSubmit }) => {
                         {errors.coverPicture && <p className="text-red-500 text-xs mt-1">{errors.coverPicture}</p>}
                     </div>
                     <div className="flex justify-between">
-                        <button type="button" onClick={onClose} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="button" onClick={onClose} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-white-100">
                             Cancel
                         </button>
-                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-white-100">
                             Save
                         </button>
                     </div>
