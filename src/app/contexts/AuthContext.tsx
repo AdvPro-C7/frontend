@@ -1,103 +1,50 @@
-"use client"
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import {
-  AuthContextProps,
-  AuthContextProviderProps,
-  UserProps,
-} from './interface'
-import { useRouter } from 'next/router'
-import Cookies from 'js-cookie'
-import { DEFAULT_USER } from './constant'
-import axios from 'axios'
+"use client";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-const AuthContext = createContext({
-  token: '',
-  isLoading: false,
-  isAuthenticated: false,
-  user: DEFAULT_USER,
-  logout: () => {},
-} as AuthContextProps) // TODO: Declare interface of contextValue
+type User = {
+  state: {
+    name: string;
+    sex: "" | "male" | "female";
+    photoLink: string;
+    email: string;
+    phoneNum: string;
+    birthDate: string;
+    bio: string;
+    warningCount: number;
+    authenticated: boolean;
+    role: "customer" | "admin";
+  };
+  setState: React.Dispatch<React.SetStateAction<User["state"]>>;
+};
 
-export const useAuth = () => useContext(AuthContext)
+export const nullUser: User["state"] = {
+  name: "",
+  sex: "",
+  photoLink: "",
+  email: "",
+  phoneNum: "",
+  birthDate: "",
+  bio: "",
+  warningCount: 0,
+  authenticated: false,
+  role: "customer",
+};
 
-export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
+const UserContext = createContext<User>({
+  state: nullUser,
+  setState: () => {},
+});
+
+export const userContext = () => useContext(UserContext);
+
+export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const [token, setToken] = useState<string>('')
-  const [user, setUser] = useState<UserProps>(DEFAULT_USER)
-
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const router = useRouter()
-
-  const getData = async (jwt: string = Cookies.get('token') as string) => {
-    try {
-      setIsLoading(true)
-      const res = await axios.get(`/v1/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      const user = res?.data as UserProps
-      setIsAuthenticated(true)
-      setUser(user)
-      setToken(jwt)
-    } catch (error: any) {
-      console.log(error)
-      setToken('')
-      setIsAuthenticated(false)
-      setUser(DEFAULT_USER)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const logout = async () => {
-    try {
-      setIsLoading(true)
-      setIsAuthenticated(false)
-      setToken('')
-      setUser(DEFAULT_USER)
-      Cookies.remove('token')
-      window.location.replace(
-        ``
-      )
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const contextValue = {
-    token: token,
-    user: user,
-    isLoading: isLoading,
-    isAuthenticated: isAuthenticated,
-    logout: logout,
-    getData: getData,
-  }
-
-  useEffect(() => {
-    if (router.asPath.includes('token')) {
-      const jwt = router.asPath.split('?token=')[1]
-      Cookies.remove('token')
-
-      Cookies.set('token', jwt)
-      router.push('/')
-    } else if (Cookies.get('token')) {
-      const jwt = Cookies.get('token') as string
-      getData(jwt)
-    }
-  }, [router.asPath])
-
-  useEffect(() => {
-    if (Cookies.get('token')) {
-      const jwt = Cookies.get('token') as string
-      getData(jwt)
-    }
-  }, [])
+  const [state, setState] = useState<User["state"]>(nullUser);
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
-  )
-}
+    <UserContext.Provider value={{ state, setState }}>
+      {children}
+    </UserContext.Provider>
+  );
+};

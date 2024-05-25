@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from "next/navigation";
 import PopUpFormEditBook from "../../components/PopUpFormUpdateBook";
@@ -19,12 +19,11 @@ const DetailsBookPageView: React.FC = () => {
     const getData = async () => {
         try {
             console.log("fetching data");
-            const response = await axios.get(`http://localhost:8080/api/book-details/8`, {
+            const response = await axios.get(`http://localhost:8081/api/book-details/1`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-
             console.log(response.data);
             setBookDetails(response.data);
         } catch (error) {
@@ -78,6 +77,10 @@ const DetailsBookPageView: React.FC = () => {
     useEffect(() => {
         getData();
     }, [bookId]);
+
+
+    // Pastikan untuk memeriksa apakah state ada sebelum mengakses propertinya
+
 
     return (
         <div className="flex flex-col min-h-screen pt-28">
