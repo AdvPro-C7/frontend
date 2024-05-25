@@ -75,7 +75,7 @@ const Dashboard = () => {
                     <h2>Customer Profile</h2>
                     <p>Name: {selectedCustomer.name}</p>
                     <p>Email: {selectedCustomer.email}</p>
-                    <p>Phone Number: {selectedCustomer.phoneNumber}</p> {/* Make sure you have this data */}
+                    <p>Phone Number: {selectedCustomer.phoneNumber}</p> 
                     <p>Warnings: {selectedCustomer.warnings}</p>
                 </div>
             )}
