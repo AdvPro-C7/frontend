@@ -54,7 +54,7 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="flex gap-4 md:gap-14 text-center items-center">
-          <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
+          <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" onClick={()=>router.push("/user-profile")}/>
           <IoBagHandleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
           {state.authenticated && <LogoutButton />}
         </div>

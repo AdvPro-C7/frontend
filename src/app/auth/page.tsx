@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import sha56 from "crypto-js/sha256";
 import { userContext } from "@/app/contexts/AuthContext";
+import "./auth.css";
 
 const authServerDomain = "https://auth-b4rcuut5xa-ew.a.run.app";
 
