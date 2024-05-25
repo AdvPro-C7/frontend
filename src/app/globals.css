@@ -22,7 +22,7 @@ body {
   height: 100vh;
 }
 
-main {
+/* main {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -30,7 +30,7 @@ main {
   align-items: center;
   padding: 32px;
   overflow: auto;
-}
+} */
 
 h1 {
   text-align: center;
