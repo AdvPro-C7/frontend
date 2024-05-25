@@ -28,7 +28,7 @@ const BookList: React.FC<BookListProps> = ({ books = [] }) => (
             books.map(book => (
                 <tr key={book.id}>
                     <td>{book.id}</td>
-                    <td>{book.judul}</td>
+                    <td>{book.title}</td>
                     <td>{book.author}</td>
                     <td>{book.publisher}</td>
                     <td>{book.price}</td>

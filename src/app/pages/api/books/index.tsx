@@ -7,7 +7,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     switch (method) {
         case 'GET':
             try {
-                const response = await axios.get('http://localhost:8080/api/buku/');
+                const response = await axios.get('http://localhost:8080/api/book-details/');
                 res.status(200).json(response.data);
             } catch (error) {
                 res.status(500).json({ message: 'Error fetching books' });

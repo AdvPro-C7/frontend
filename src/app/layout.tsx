@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import BookList from "./components/BookList";
+import CustomerList from "./components/CustomerList";
+import WarningsMessageList from "./components/WarningsMessageList";
 
 const nunito = Nunito({ subsets: ['latin'], display: 'fallback' });
 export const metadata: Metadata = {
@@ -19,6 +22,9 @@ export default function RootLayout({
       <body  className={nunito.className}>
 
         <Navbar />
+        <BookList books={[]} />
+        <CustomerList />
+        <WarningsMessageList />
        <main className="bg-primary min-h-screen">{children}</main>
       </body>
     </html>
