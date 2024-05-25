@@ -1,7 +1,26 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
+import Cors from 'cors';
+
+const cors = Cors({
+    methods: ['GET', 'OPTIONS'], 
+    origin: '*', 
+    optionsSuccessStatus: 200, 
+  });
+  
+  function runMiddleware(req, res, fn) {
+    return new Promise((resolve, reject) => {
+      fn(req, res, (result) => {
+        if (result instanceof Error) {
+          return reject(result);
+        }
+        return resolve(result);
+      });
+    });
+  }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+    await runMiddleware(req, res, cors);
     const { method } = req;
 
     switch (method) {
