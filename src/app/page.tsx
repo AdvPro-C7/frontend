@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 interface Book {
   coverImageUrl: string;
@@ -18,6 +18,9 @@ interface Book {
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
 
+  const warningCountString = localStorage.getItem("warningCount");
+  const warningCount = warningCountString ? parseInt(warningCountString) : 0;
+
   useEffect(() => {
     fetch("http://localhost:8080/api/best-selling-books")
       .then((response) => response.json())
@@ -30,18 +33,31 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen bg-primary flex-col items-center justify-between p-24">
+    <>
+      {warningCount > 2 && (
+        <div
+          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mt-24"
+          role="alert"
+        >
+          <p className="font-bold">Peringatan!</p>
+          <p>
+            Anda sudah mendapatkan 2 peringatan, sekali lagi Anda mendapatkan
+            peringatan maka akun Anda akan diblokir.
+          </p>
+        </div>
+      )}
+
       <div className="book-list">
-        {/* Map over the books array and render each book */}
+        {/* map over the books array and render each book */}
         {books.map((book, index) => (
           <div key={index} className="book-item">
             <div className="book-cover">
-              {/* Use the Next.js Image component for optimized image rendering */}
+              {/* use the Next.js Image component for optimized image rendering */}
               <Image
                 src={book.coverImageUrl}
                 alt={book.title}
                 width={200}
-                height={300}
+                height={240}
               />
             </div>
             <div className="book-info">
@@ -58,6 +74,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-    </main>
+    </>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import sha56 from "crypto-js/sha256";
-import { userContext } from "@/app/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import "./auth.css";
 
 const authServerDomain = "https://auth-b4rcuut5xa-ew.a.run.app";
 
@@ -43,8 +43,11 @@ interface RegistrationFormValues {
 }
 
 export default function authPage() {
-  const { state, setState } = userContext();
   const router = useRouter();
+
+  useEffect(() => {
+    if (localStorage.getItem("authenticated") != null) router.push("/");
+  }, []);
 
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
     try {
@@ -63,19 +66,19 @@ export default function authPage() {
         togglePopUp(body.message);
 
         if (endpoint == "/login") {
-          const modifiedState = { ...state };
-          modifiedState.name = body.user.nama;
-          modifiedState.sex = body.user.jenisKelamin;
-          modifiedState.photoLink = body.user.foto;
-          modifiedState.email = body.user.email;
-          modifiedState.phoneNum = body.user.noTelp;
-          modifiedState.birthDate = body.user.tanggalLahir;
-          modifiedState.bio = body.user.bio;
-          modifiedState.warningCount = body.user.jumlahPeringatan;
-          modifiedState.role = body.user.role;
-          modifiedState.authenticated = true;
-
-          setState(modifiedState);
+          localStorage.setItem("name", body.user.nama);
+          localStorage.setItem("sex", body.user.jenisKelamin);
+          localStorage.setItem("photoLink", body.user.foto);
+          localStorage.setItem("emailAddress", body.user.email);
+          localStorage.setItem("phoneNum", body.user.noTelp);
+          localStorage.setItem("birthDate", body.user.tanggalLahir);
+          localStorage.setItem("bio", body.user.bio);
+          localStorage.setItem(
+            "warningCount",
+            body.user.jumlahPeringatan.toString()
+          );
+          localStorage.setItem("role", body.user.role);
+          localStorage.setItem("authenticated", true.toString());
 
           router.push("/");
         }

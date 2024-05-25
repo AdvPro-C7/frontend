@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import { AuthContextProvider } from "./contexts/AuthContext";
+import type { Metadata } from "next";
+import { Nunito } from "next/font/google";
+
+const nunito = Nunito({ subsets: ["latin"], display: "fallback" });
 
 export const metadata: Metadata = {
   title: "Buku.ID | Toko Buku Online Terlengkap di Indonesia",
@@ -15,11 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ fontFamily: "Montserrat, sans-serif" }}>
-        <AuthContextProvider>
-          <Navbar />
-          <main className="bg-primary min-h-screen">{children}</main>
-        </AuthContextProvider>
+      <body className={nunito.className}>
+        <Navbar />
+        <main className="bg-primary min-h-screen">{children}</main>
       </body>
     </html>
   );
