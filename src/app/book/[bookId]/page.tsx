@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import PopUpFormEditBook from "../../components/PopUpFormUpdateBook";
 import { BookDetailProps, BookDetailPropsForAdd } from '../../types/BookDetailProps';
 import PopUpFormAddBook from '../../components/PopUpFormAddBook';
-import { userContext } from '@/app/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
 const DetailsBookPageView: React.FC = () => {
@@ -14,9 +13,21 @@ const DetailsBookPageView: React.FC = () => {
     const params = useParams();
     const { bookId } = params;
     const [bookDetails, setBookDetails] = useState<BookDetailProps | null>(null);
-    const { state } = userContext();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [isPopupOpenForAdd, setIsPopupOpenForAdd] = useState(false);
+    const [role, setRole] = useState<string | null>();
+
+    useEffect(() => {
+        const items = localStorage.getItem('role');
+        if (items) {
+            setRole(items);
+        }
+    }, []);
+
+    
+    useEffect(() => {
+        getData();
+    }, [role, bookId]);
 
     const getData = async () => {
         try {
@@ -116,9 +127,6 @@ const DetailsBookPageView: React.FC = () => {
     }, [bookId]);
 
 
-    // Pastikan untuk memeriksa apakah state ada sebelum mengakses propertinya
-
-
     return (
         <div className="flex flex-col min-h-screen pt-28">
             <div className="px-20 py-12 mr-24">
@@ -139,7 +147,7 @@ const DetailsBookPageView: React.FC = () => {
                                             <p className='text-sm'>Sold: {bookDetails.sold}</p>
                                         </div>
                                     </div>
-                                    { state.role == 'admin' && (
+                                    { role == 'admin' && (
                                         <div className='flex space-x-5'>
                                             <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
                                             <button className='btn btn-accent px-10 text-white-100' onClick={handleAddClick}>Add</button>
@@ -147,7 +155,7 @@ const DetailsBookPageView: React.FC = () => {
                                             <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete Book</button>
                                         </div>
                                     )}
-                                    { state.role == 'customer' && (
+                                    { role == 'pelanggan' && (
                                         <div className='flex space-x-5'>
                                             <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
                                             <button className='btn btn-accent px-10 text-white-100' onClick={handleAddClick}>Add</button>

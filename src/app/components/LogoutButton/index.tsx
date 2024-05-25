@@ -1,14 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { userContext, nullUser } from "@/app/contexts/AuthContext";
 
 const LogoutButton = () => {
   const router = useRouter();
-  const { setState } = userContext();
 
   const logout = () => {
-    setState(nullUser);
-
+    localStorage.clear();
     router.push("/auth");
   };
 

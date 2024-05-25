@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import LogoutButton from "../LogoutButton";
 import React from "react";
 import { IoPersonCircleOutline, IoBagHandleOutline } from "react-icons/io5";
-import LogoutButton from "../LogoutButton";
-import { userContext } from "@/app/contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import GoToAuthButton from "../GoToAuthButton/page";
 
 interface NavLinkProps {
   href: string;
@@ -29,9 +29,6 @@ function NavLink({ href, isActive, children }: NavLinkProps) {
 }
 
 const Navbar = () => {
-  const router = useRouter();
-  const { state } = userContext();
-
   const pathname = usePathname();
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -56,7 +53,11 @@ const Navbar = () => {
         <div className="flex gap-4 md:gap-14 text-center items-center">
           <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
           <IoBagHandleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
-          {state.authenticated && <LogoutButton />}
+          {localStorage.getItem("authenticated") == null ? (
+            <GoToAuthButton />
+          ) : (
+            <LogoutButton />
+          )}
         </div>
       </div>
     </nav>
