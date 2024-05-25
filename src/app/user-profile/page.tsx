@@ -29,6 +29,7 @@ const UserProfile: React.FC = () => {
 
     const [cloudName] = useState("dzjfu0tcd");
     const [uploadPreset] = useState("ml_default");
+    const [uploadedFileUrl, setUploadedFileUrl] = useState('');
 
     const router = useRouter();
 
