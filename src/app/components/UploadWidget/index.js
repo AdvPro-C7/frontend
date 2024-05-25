@@ -1,25 +1,64 @@
-import { useEffect, useRef } from 'react';
+import { createContext, useEffect, useState } from "react";
 
-const UploadWidget = () => {
-    const cloudinaryRef = useRef();
-    const widgetRef = useRef();
-    useEffect(() => {
-        cloudinaryRef.current = window.cloudinary;
-        widgetRef.current = cloudinaryRef.current.createUploadWidget({
-            cloudName: 'dzjfu0tcd',
-            uploadPreset: 'ml_default'
-        }, function(error, result) {
-            console.log(result, error);
-        });
-    }, []);
+// Create a context to manage the script loading state
+const CloudinaryScriptContext = createContext();
 
-    return (
-        <div>
-          <button onClick={() => widgetRef.current.open()}>
-            Upload
-          </button>
-        </div>
+function CloudinaryUploadWidget({ uwConfig, setPublicId }) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // Check if the script is already loaded
+    if (!loaded) {
+      const uwScript = document.getElementById("uw");
+      if (!uwScript) {
+        // If not loaded, create and load the script
+        const script = document.createElement("script");
+        script.setAttribute("async", "");
+        script.setAttribute("id", "uw");
+        script.src = "https://widget.cloudinary.com/v2.0/global/all.js";
+        script.addEventListener("load", () => setLoaded(true));
+        document.body.appendChild(script);
+      } else {
+        // If already loaded, update the state
+        setLoaded(true);
+      }
+    }
+  }, [loaded]);
+
+  const initializeCloudinaryWidget = () => {
+    if (loaded) {
+      var myWidget = window.cloudinary.createUploadWidget(
+        uwConfig,
+        (error, result) => {
+          if (!error && result && result.event === "success") {
+            console.log("Done! Here is the image info: ", result.info);
+            setPublicId(result.info.public_id);
+          }
+        }
       );
-};
 
-export default UploadWidget;
+      document.getElementById("upload_widget").addEventListener(
+        "click",
+        function () {
+          myWidget.open();
+        },
+        false
+      );
+    }
+  };
+
+  return (
+    <CloudinaryScriptContext.Provider value={{ loaded }}>
+      <button
+        id="upload_widget"
+        className="btn btn-neutral bg-blue"
+        onClick={initializeCloudinaryWidget}
+      >
+        Upload
+      </button>
+    </CloudinaryScriptContext.Provider>
+  );
+}
+
+export default CloudinaryUploadWidget;
+export { CloudinaryScriptContext };
