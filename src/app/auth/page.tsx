@@ -47,6 +47,7 @@ export default function authPage() {
   const router = useRouter();
 
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
+    console.log("Submitting data:", data);
     try {
       const response = await fetch(authServerDomain + endpoint, {
         method: "POST",
@@ -64,6 +65,7 @@ export default function authPage() {
 
         if (endpoint == "/login") {
           const modifiedState = { ...state };
+          modifiedState.id = body.user.id;
           modifiedState.name = body.user.nama;
           modifiedState.sex = body.user.jenisKelamin;
           modifiedState.photoLink = body.user.foto;

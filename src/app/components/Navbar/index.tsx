@@ -34,14 +34,25 @@ const Navbar = () => {
 
   const pathname = usePathname();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false); // Track authentication status
 
   useEffect(() => {
+    // Check authentication status
+    setAuthenticated(state.authenticated);
     setIsLoaded(true);
-  }, []);
+  }, [state.authenticated]);
+
+  const handleCartClick = () => {
+    // Redirect to cart if authenticated, otherwise do nothing (disabled state)
+    if (authenticated) {
+      router.push(`/cart/${state.id}`); // Assuming state.userId is available
+    }
+    // You can optionally handle what happens if the user is not authenticated
+  };
 
   return (
     <nav className="fixed z-40 w-full bg-primary shadow-md">
-      <div className="flex justify-between items-center mx-12 py-4 md:mx-24">
+      <div className="flex justify-between items-center mx-12 py-2 md:mx-24">
         <div className="flex items-center">
           <NavLink href="/" isActive={pathname === "/"}>
             <Image
@@ -55,7 +66,12 @@ const Navbar = () => {
         </div>
         <div className="flex gap-4 md:gap-14 text-center items-center">
           <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
-          <IoBagHandleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
+          <IoBagHandleOutline
+            className={`text-blue-100 text-3xl md:text-4xl cursor-pointer ${
+              authenticated ? "hover:text-blue-300" : "opacity-50 pointer-events-none"
+            }`}
+            onClick={handleCartClick}
+          />
           {state.authenticated && <LogoutButton />}
         </div>
       </div>
