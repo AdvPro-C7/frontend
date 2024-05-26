@@ -34,7 +34,7 @@ const History: React.FC = () => {
     const fetchWaitingPayment = async () => {
         try {
             setLoadingFetch(true); 
-            const response = await fetch('http://localhost:8080/api/order/waiting-shipping', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/order/waiting-shipping', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

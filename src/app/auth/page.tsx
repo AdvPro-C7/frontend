@@ -5,7 +5,7 @@ import sha56 from "crypto-js/sha256";
 import { userContext } from "@/app/contexts/AuthContext";
 import "./auth.css";
 
-const authServerDomain = "https://auth-b4rcuut5xa-ew.a.run.app";
+const authServerDomain = "https://auth-hkqa74sxta-ew.a.run.app/";
 
 function toggleAccordions(event: { target: any }) {
   const accordion = event.target.parentNode;

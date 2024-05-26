@@ -44,7 +44,7 @@ const Navbar = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/customer/userCart', {
+      const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/userCart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Navbar = () => {
         const data = await response.json();
         setTotalCartItems(data.cartItems.length);
       } else if (response.status === 404) {
-        await fetch('http://localhost:8080/api/customer/createCart', {
+        await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/createCart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
