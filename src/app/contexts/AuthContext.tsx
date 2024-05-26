@@ -43,6 +43,47 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [state, setState] = useState<User["state"]>(nullUser);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userState = localStorage.getItem("userState") || "{}";
+    setState(JSON.parse(userState));
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <div
+          style={{
+            border: "16px solid #f3f3f3",
+            borderRadius: "50%",
+            borderTop: "16px solid navy",
+            width: "120px",
+            height: "120px",
+            animation: "spin 2s linear infinite",
+          }}
+        />
+        <style jsx global>{`
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <UserContext.Provider value={{ state, setState }}>

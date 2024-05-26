@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import sha56 from "crypto-js/sha256";
 import { userContext } from "@/app/contexts/AuthContext";
+import "./auth.css";
 
 const authServerDomain = "https://auth-b4rcuut5xa-ew.a.run.app";
 
@@ -46,6 +47,10 @@ export default function authPage() {
   const { state, setState } = userContext();
   const router = useRouter();
 
+  useEffect(() => {
+    if (state.authenticated) router.push("/");
+  }, []);
+
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
     console.log("Submitting data:", data);
     try {
@@ -78,6 +83,7 @@ export default function authPage() {
           modifiedState.authenticated = true;
 
           setState(modifiedState);
+          localStorage.setItem("userState", JSON.stringify(modifiedState));
 
           router.push("/");
         }
@@ -193,7 +199,7 @@ export default function authPage() {
               <input
                 type="text"
                 id="reg-email-address"
-                name="email"
+                name="emailAddress"
                 value={registrationForm.emailAddress}
                 onChange={handleRegistrationInputChange}
                 required
