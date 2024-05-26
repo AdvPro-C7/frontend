@@ -88,6 +88,9 @@ const DetailsBookPageView: React.FC = () => {
                     },
                     body: JSON.stringify({ userId, bookId, quantity }),
                 });
+                if(response.ok){
+                    router.push('/book-list'); 
+                }
             } catch (error) {
                 console.error('Error updating book details:', error);
             }
