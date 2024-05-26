@@ -31,7 +31,7 @@ const dashboard: React.FC = () => {
     const router = useRouter();
 
     useEffect(() => {
-        axios.get<Book[]>('http://localhost:8087/api/book-details')
+        axios.get<Book[]>('https://admin-hkqa74sxta-ew.a.run.app/api/book-details')
             .then(response => setBooks(response.data || [])) 
             .catch(error => console.error('Error fetching books:', error));
 
@@ -41,7 +41,7 @@ const dashboard: React.FC = () => {
     }, []);
 
     const deleteBook = (id: number) => {
-        axios.delete(`http://localhost:8087/api/book-details/${id}`)
+        axios.delete(`https://admin-hkqa74sxta-ew.a.run.app/api/book-details/${id}`)
             .then(() => setBooks(books.filter(book => book.id !== id)))
             .catch(error => console.error('Error deleting book:', error));
     };

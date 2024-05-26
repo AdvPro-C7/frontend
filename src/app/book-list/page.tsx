@@ -26,12 +26,12 @@ const BookList: React.FC = () => {
     const isRadioSelected = (value: string): boolean => sortType === value;
     const handleRadioClick = (e: React.ChangeEvent<HTMLInputElement>) => setSortType(e.currentTarget.value)
 
-    let url_keyword = `http://localhost:8080/api/book-list/search-sort?keyword=${encodeURIComponent(searchQuery)}&sortBy=${encodeURIComponent(sortType)}`;
+    let url_keyword = `https://admin-hkqa74sxta-ew.a.run.app/api/book-list/search-sort?keyword=${encodeURIComponent(searchQuery)}&sortBy=${encodeURIComponent(sortType)}`;
 
     const pageLoad = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/api/book-list`);
+            const response = await fetch(`https://admin-hkqa74sxta-ew.a.run.app/api/book-list`);
             if (response.ok) {
                 const fetchedBooks: books[] = await response.json(); 
                 setBookData(fetchedBooks); 
