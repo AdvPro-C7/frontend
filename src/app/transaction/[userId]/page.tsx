@@ -28,12 +28,13 @@ const Transaction: React.FC = () => {
     const { state } = userContext();
     const userId = state.id;
     const [data, setData] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingFetch, setLoadingFetch] = useState(true); // State for loading indicator
     const [error, setError] = useState<string | null>(null);
     const [openDropdown, setOpenDropdown] = useState<Record<number, boolean>>({});
 
     const fetchWaitingPayment = async () => {
         try {
+            setLoadingFetch(true); // Set loading state to true before fetching
             const response = await fetch('http://localhost:8080/api/order/waiting-payment', {
                 method: 'POST',
                 headers: {
@@ -50,11 +51,11 @@ const Transaction: React.FC = () => {
         } catch (error: any) {
             setError(error.message);
         } finally {
-            setLoading(false);
+            setLoadingFetch(false); // Set loading state to false after fetching
         }
     };
-    useEffect(() => {
 
+    useEffect(() => {
         fetchWaitingPayment();
     }, [userId]);
 
@@ -66,7 +67,6 @@ const Transaction: React.FC = () => {
     };
 
     const handlePayment = async (orderId: number) => {
-        
         try {
             const response = await fetch('http://localhost:8080/api/order/pay', {
                 method: 'POST',
@@ -79,20 +79,16 @@ const Transaction: React.FC = () => {
             if (!response.ok) {
                 toast.error('Payment failed');
                 throw new Error(`Failed to pay: ${response.statusText}`);
-            }
-            else {
+            } else {
                 toast.success('Payment success');
-                fetchWaitingPayment()
+                fetchWaitingPayment(); // Refresh data after successful payment
             }
-
         } catch (error) {
             console.error('Failed to pay:', error);
         }
-
     };
 
     const handleCancel = async (orderId: number) => {
-        
         try {
             const response = await fetch('http://localhost:8080/api/order/cancel', {
                 method: 'POST',
@@ -105,43 +101,40 @@ const Transaction: React.FC = () => {
             if (!response.ok) {
                 toast.error('Cancel failed');
                 throw new Error(`Failed to cancel: ${response.statusText}`);
-            }
-            else {
+            } else {
                 toast.success('Cancel success');
-                fetchWaitingPayment()
+                fetchWaitingPayment(); // Refresh data after successful cancellation
             }
-
         } catch (error) {
-            console.error('Failed to pay:', error);
+            console.error('Failed to cancel:', error);
         }
-
     };
 
     return (
         <div className="w-full text-gray-800 flex justify-left text-left flex-col p-28 py-40 min-h-screen bg-gray-100">
             <h1 className="text-gray-800 font-semibold text-4xl mb-6">Your Payments</h1>
 
-            {loading && <p className="text-xl">Loading...</p>}
+            {loadingFetch && <p className="text-xl">Loading...</p>}
             {data && data.length > 0 ? (
                 data.map(order => (
                     <div key={order.id} className="mb-10 bg-white shadow-md rounded-lg p-6">
-                        <h2 className="text-2xl font-bold mb-2">Tanggal Order: {new Date(order.orderDate).toLocaleDateString()}</h2>
+                        <h2 className="text-2xl font-bold mb-2">Order Date: {new Date(order.orderDate).toLocaleDateString()}</h2>
                         <p className="text-lg">Status: <span className={`font-semibold ${order.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}`}>{order.status}</span></p>
-                        <p className="text-lg">Total Harga: <span className="font-semibold">${order.totalPrice}</span></p>
-                        <div className="flex flex-row gap-3 py-4 w-1/4">
+                        <p className="text-lg">Total Price: <span className="font-semibold">${order.totalPrice}</span></p>
+                        <div className="flex flex-row gap-3 py-4">
 
-                        <button
-                            onClick={() => handlePayment(order.id)}
-                            className="w-2/5 bg-blue-100 text-white-100  border-none px-4 py-2 rounded hover:bg-blue-500"
-                        >
-                            Bayar Sekarang
-                        </button>
-                        <button
-                            onClick={() => handleCancel(order.id)}
-                            className="w-2/5 btn bg-red-500 border-none text-white-100 px-4 py-2 rounded "
-                        >
-                            Cancel
-                        </button>
+                            <button
+                                onClick={() => handlePayment(order.id)}
+                                className="w-2/4 rounded-lg bg-blue-500 text-white px-2 py-2 hover:bg-blue-700"
+                            >
+                                Pay Now
+                            </button>
+                            <button
+                                onClick={() => handleCancel(order.id)}
+                                className="w-2/4 rounded-lg bg-red-500 text-white px-2 py-2 hover:bg-red-700"
+                            >
+                                Cancel
+                            </button>
                         </div>
                         <div className="mt-6">
                             <h3 className="text-xl font-semibold mb-4 flex justify-between items-center cursor-pointer" onClick={() => toggleDropdown(order.id)}>
@@ -168,7 +161,7 @@ const Transaction: React.FC = () => {
                                 </div>
                             )}
                         </div>
-                      
+
                     </div>
                 ))
             ) : (

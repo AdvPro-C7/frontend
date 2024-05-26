@@ -8,12 +8,12 @@ const LogoutButton = () => {
 
   const logout = () => {
     setState(nullUser);
-
+    localStorage.removeItem("userState");
     router.push("/auth");
   };
 
   return (
-    <button id="logout-btn" onClick={logout}>
+    <button className="bg-[#00a64c] text-white-100 rounded-lg py-4 px-4" id="logout-btn" onClick={logout}>
       Logout
     </button>
   );

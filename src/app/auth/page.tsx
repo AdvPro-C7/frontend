@@ -47,15 +47,23 @@ export default function authPage() {
   const { state, setState } = userContext();
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false);
+  const [loadingRegister, setLoadingRegister] = useState(false);
 
   useEffect(() => {
     if (state.authenticated) router.push("/");
   }, []);
 
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
-    setLoading(true);
+    console.log("Submitting data:", data);
+
     try {
+      if (endpoint == "/login") {
+        setLoadingLogin(true);
+      }
+      else if (endpoint == "/register") {
+        setLoadingRegister(true)
+      }
       const response = await fetch(authServerDomain + endpoint, {
         method: "POST",
         headers: {
@@ -86,15 +94,18 @@ export default function authPage() {
 
           setState(modifiedState);
           localStorage.setItem("userState", JSON.stringify(modifiedState));
-          setLoading(false);
+          setLoadingLogin(false);
           router.push("/");
         }
       } else {
+        setLoadingLogin(false);
+        setLoadingRegister(false);
         togglePopUp(body.message || "An error occurred.");
       }
     } catch (error) {
+      setLoadingLogin(false);
+      setLoadingRegister(false);
       console.error("Error:", error);
-      setLoading(false);
       togglePopUp("An error occurred.");
     }
   }
@@ -141,7 +152,6 @@ export default function authPage() {
       id: id,
       password: encryptedPassword,
     });
-
   };
 
   const handleRegistrationSubmit = async () => {
@@ -158,7 +168,7 @@ export default function authPage() {
         phoneNumber: phoneNumber,
         password: encryptedPassword,
       });
-      
+
     }
 
     setRegistrationForm((_) => ({
@@ -230,14 +240,17 @@ export default function authPage() {
                 onChange={handleRegistrationInputChange}
                 required
               />
-              <button
-                type="button"
-                id="reg-submit-btn"
-                onClick={handleRegistrationSubmit}
-                disabled={loading} // Disable button when loading
-              >
-                {loading ? 'Loading...' : 'Submit'}
-              </button>
+              {loadingRegister ?
+
+                <span className="loading loading-dots loading-lg"></span> : <button
+                  type="button"
+                  id="reg-submit-btn"
+                  onClick={handleRegistrationSubmit}
+                  disabled={loadingRegister} // Disable button when loading
+                >
+                  {'Submit'}
+                </button>}
+
             </div>
           </div>
         </div>
@@ -270,15 +283,15 @@ export default function authPage() {
                 onChange={handleLoginInputChange}
                 required
               />
-              {loading ?
+              {loadingLogin ?
 
                 <span className="loading loading-dots loading-lg"></span> : <button
                   type="button"
                   id="login-submit-btn"
                   onClick={handleLoginSubmit}
-                  disabled={loading}
+                  disabled={loadingLogin}
 
-                >'Submit'</button>}
+                >Submit</button>}
             </div>
           </div>
         </div>

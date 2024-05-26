@@ -8,7 +8,7 @@ const GoToAuthButton = () => {
     router.push("/auth");
   };
 
-  return <button onClick={redirect}>Go To Authentication Page</button>;
+  return <button  className="bg-[#00a64c] text-white-100 rounded-lg py-4 px-4"  onClick={redirect}>Go To Authentication Page</button>;
 };
 
 export default GoToAuthButton;

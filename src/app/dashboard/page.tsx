@@ -28,7 +28,7 @@ const dashboard: React.FC = () => {
             .then(response => setBooks(response.data || [])) 
             .catch(error => console.error('Error fetching books:', error));
 
-        axios.get<Customer[]>('http://localhost:8087/api/customer/')
+        axios.get<Customer[]>('https://admin-hkqa74sxta-ew.a.run.app/')
             .then(response => setCustomers(response.data || [])) 
             .catch(error => console.error('Error fetching customers:', error));
     }, []);
@@ -40,7 +40,7 @@ const dashboard: React.FC = () => {
     };
 
     const warnCustomer = (id: number) => {
-        axios.post<Customer>(`http://localhost:8087/api/customer/warn/${id}`)
+        axios.post<Customer>(`https://admin-hkqa74sxta-ew.a.run.app/warn/${id}`)
             .then(response => {
                 const updatedCustomer = response.data;
                 setCustomers(customers.map(customer =>
@@ -51,7 +51,7 @@ const dashboard: React.FC = () => {
     };
 
     const viewCustomerProfile = (id: number) => {
-        axios.get<Customer>(`http://localhost:8087/api/customer/${id}`)
+        axios.get<Customer>(`https://admin-hkqa74sxta-ew.a.run.app/${id}`)
             .then(response => setSelectedCustomer(response.data))
             .catch(error => console.error('Error fetching customer profile:', error));
     };

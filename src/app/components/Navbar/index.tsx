@@ -19,7 +19,7 @@ function NavLink({ href, isActive, children }: NavLinkProps) {
       className={`transition-opacity px-3 py-1 rounded-full ${isActive
         ? "active underline font-bold bg-red-primary hover:opacity-70"
         : "hover:text-red-primary"
-        } `}
+      } `}
       href={href}
     >
       {children}
@@ -90,12 +90,16 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="flex gap-4 md:gap-14 text-center items-center">
-          <NavLink href={`/history/${userId}`} isActive={pathname === `/history/${userId}`}>
-            Pesanan Saya
-          </NavLink>
-          <NavLink href={`/transaction/${userId}`} isActive={pathname === `/transaction/${userId}`}>
-            Belum Bayar
-          </NavLink>
+          {state.authenticated && (
+            <>
+              <NavLink href={`/history/${userId}`} isActive={pathname === `/history/${userId}`}>
+                Pesanan Saya
+              </NavLink>
+              <NavLink href={`/transaction/${userId}`} isActive={pathname === `/transaction/${userId}`}>
+                Belum Bayar
+              </NavLink>
+            </>
+          )}
           <IoPersonCircleOutline
             className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300"
             onClick={() => router.push("/user-profile")}
@@ -105,7 +109,7 @@ const Navbar = () => {
               className={`text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300 ${state.authenticated ? "" : "opacity-50 pointer-events-none"}`}
               onClick={handleCartClick}
             />
-            {totalCartItems >= 0 && (
+            {state.authenticated && totalCartItems >= 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white-100 rounded-full w-6 h-5 flex items-center justify-center text-xs">
                 {totalCartItems}
               </span>
