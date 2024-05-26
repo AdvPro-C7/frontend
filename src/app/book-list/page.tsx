@@ -4,6 +4,7 @@ import { userContext } from "../contexts/AuthContext"
 import { useRouter } from "next/navigation"
 
 interface books {
+    id: number;
     title: string;
     author: string;
     price: number;
@@ -164,7 +165,7 @@ const BookList: React.FC = () => {
                                             <p className="text-sm">Tanggal Rilis: {book.publishDate}</p>
                                         </div>
                                         <div className="card-actions justify-end p-4">
-                                            <button className="btn btn-neutral bg-primary" onClick={()=>router.push("")}>Detail Buku</button>
+                                            <button className="btn btn-neutral bg-primary" onClick={()=>router.push(`/book/${book.id}`)}>Detail Buku</button>
                                             <button className="btn btn-neutral bg-blue" onClick={()=>router.push("")}>Beli</button>
                                         </div>
                                     </div>
