@@ -31,6 +31,7 @@ function NavLink({ href, isActive, children }: NavLinkProps) {
 const Navbar = () => {
   const pathname = usePathname();
   const [isLoaded, setIsLoaded] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -51,7 +52,7 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="flex gap-4 md:gap-14 text-center items-center">
-          <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
+          <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" onClick={()=>router.push("/user-profile")}/>
           <IoBagHandleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
           {localStorage.getItem("authenticated") == null ? (
             <GoToAuthButton />

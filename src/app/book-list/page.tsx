@@ -4,7 +4,6 @@ import { userContext } from "../contexts/AuthContext"
 import { useRouter } from "next/navigation"
 
 interface books {
-    id: String;
     title: string;
     author: string;
     price: number;
@@ -31,7 +30,7 @@ const BookList: React.FC = () => {
     const pageLoad = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8081/api/book-details`);
+            const response = await fetch(`http://localhost:8080/api/book-list`);
             if (response.ok) {
                 const fetchedBooks: books[] = await response.json(); 
                 setBookData(fetchedBooks); 
@@ -165,7 +164,7 @@ const BookList: React.FC = () => {
                                             <p className="text-sm">Tanggal Rilis: {book.publishDate}</p>
                                         </div>
                                         <div className="card-actions justify-end p-4">
-                                            <button className="btn btn-neutral bg-primary" onClick={()=>router.push(`book/${book.id}`)}>Detail Buku</button>
+                                            <button className="btn btn-neutral bg-primary" onClick={()=>router.push("")}>Detail Buku</button>
                                             <button className="btn btn-neutral bg-blue" onClick={()=>router.push("")}>Beli</button>
                                         </div>
                                     </div>

@@ -16,9 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={nunito.className}>
-        <Navbar />
-        <main className="bg-primary min-h-screen">{children}</main>
+      <body style={{ fontFamily: "Montserrat, sans-serif" }}>
+          <Navbar />
+          <main className="bg-primary min-h-screen">{children}</main>
       </body>
     </html>
   );

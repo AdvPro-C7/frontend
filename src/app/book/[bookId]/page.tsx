@@ -32,7 +32,7 @@ const DetailsBookPageView: React.FC = () => {
     const getData = async () => {
         try {
             console.log("fetching data");
-            const response = await axios.get(`http://localhost:8081/api/book-details/1`, {
+            const response = await axios.get(`http://localhost:8081/api/book-details/${bookId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -112,14 +112,18 @@ const DetailsBookPageView: React.FC = () => {
             alert("Buku tidak dapat dihapus karena sudah pernah terjual.");
         } else {
             try {
-                const response = await axios.delete(`http://localhost:8081/api/book-details/1`, {
+                const response = await axios.delete(`http://localhost:8081/api/book-details/${bookId}`, {
                 });
                 console.log('Book deleted:', response.data);
-                router.push('/book/1'); // Redirect to book list page after deletion
+                router.push('/book'); // Redirect to book list page after deletion
             } catch (error) {
                 console.error('Error deleting book:', error);
             }
         }
+    };
+
+    const handleAddToChart = async () => {
+      
     };
 
     useEffect(() => {
@@ -158,7 +162,7 @@ const DetailsBookPageView: React.FC = () => {
                                     { role == 'pelanggan' && (
                                         <div className='flex space-x-5'>
                                             <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
-                                            <button className='btn btn-accent px-10 text-white-100' onClick={handleAddClick}>Add</button>
+                                            <button className='btn btn-active btn-primary px-10 text-white-100' onClick={handleAddToChart} >Add to Chart</button>
                                             <button className='btn btn-secondary px-10 text-white-100' onClick={handleShare}>Share</button>
                                             <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete</button>
                                         </div>
