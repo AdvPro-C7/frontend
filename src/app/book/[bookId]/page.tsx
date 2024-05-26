@@ -81,7 +81,7 @@ const DetailsBookPageView: React.FC = () => {
             try {
                 const quantity = 1;
                 const userId = state.id;
-                const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/cart', {
+                const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/cart', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
