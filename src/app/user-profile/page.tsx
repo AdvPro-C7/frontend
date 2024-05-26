@@ -3,16 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { userContext } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation"; 
 import { IoPersonCircleOutline } from "react-icons/io5";
-import {Cloudinary} from "@cloudinary/url-gen";
+import { Cloudinary } from "@cloudinary/url-gen";
 import UploadWidget from '../components/UploadWidget';
-import {AdvancedImage} from '@cloudinary/react';
+import { AdvancedImage } from '@cloudinary/react';
 import CloudinaryUploadWidget from '../components/UploadWidget';
 import { thumbnail } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import Chunked from '../components/Chunked';
-
+import axios from 'axios';
+import sha256 from "crypto-js/sha256";
+import PasswordChangeModal from '../components/PasswordChangeModal'; // Import the modal
+import LogoutButton from '../components/LogoutButton';
 
 type UserProps = {
+    id: number;
     nama: string;
     email: string;
     noTelp: string;
@@ -24,11 +28,14 @@ type UserProps = {
 
 const UserProfile: React.FC = () => {
     const [userData, setUserData] = useState<UserProps | null>(null);
+    const [originalUserData, setOriginalUserData] = useState<UserProps | null>(null);
     const { state } = userContext();
     const [publicId, setPublicId] = useState("");
 
     const [cloudName] = useState("dzjfu0tcd");
     const [uploadPreset] = useState("ml_default");
+    const [newPassword, setNewPassword] = useState("");
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false); // State for modal
 
     const router = useRouter();
 
@@ -39,12 +46,13 @@ const UserProfile: React.FC = () => {
     const fetchUser = async () => {
         setIsLoaded(true);
         try {
-            const response = await fetch(`http://localhost:8080/get-user-details?uid=${state.email}`, {
+            const response = await fetch(`https://auth-hkqa74sxta-ew.a.run.app/get-user-details?uid=${state.email}`, {
                 headers: { 'Authorization': `Bearer ${state.authenticated}` }
             });
             if (response.ok) {
                 const fetchedUser = await response.json();
                 setUserData(fetchedUser as UserProps);
+                setOriginalUserData(fetchedUser as UserProps);
             } else {
                 throw new Error('Failed to fetch user data: ' + response.statusText);
             }
@@ -55,16 +63,57 @@ const UserProfile: React.FC = () => {
         }
     }
 
+    const encryptPassword = (input: string) => sha256(input).toString();
+
+    
+
+    const handleProfileUpdate = async () => {
+        try {
+            const updates = {
+                uid: state.email, // Assuming UID is the email
+                name: userData?.nama,
+                birthDate: userData?.tanggalLahir?.toISOString(),
+                bio: userData?.bio,
+                gender: userData?.jenisKelamin,
+                password: newPassword ? encryptPassword(newPassword) : null,
+                photo: publicId
+            };
+
+            const response = await axios.patch('https://auth-hkqa74sxta-ew.a.run.app/profile/updateProfile', updates, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            setUserData(response.data);
+            setOriginalUserData(response.data);
+            setIsEdit(false);
+        } catch (error) {
+            console.error('Error updating profile:', error);
+        }
+    };
+
     const handleInputChange = <K extends keyof UserProps>(key: K, value: UserProps[K]) => {
         setUserData(prev => ({
             ...prev,
             [key]: value,
         } as UserProps));
     };
-    
+
+    const handleChangePassword = async (newPassword: string) => {
+        setNewPassword(newPassword);
+        handleProfileUpdate();
+    };
+
     useEffect(() => {
-        fetchUser();
-    }, [state.authenticated]);
+        if (!state.authenticated) {
+            router.push('/auth');
+        } else {
+            fetchUser();
+            if (userData?.foto)
+                setPublicId(userData.foto);
+        }
+    }, []);
 
     const cld = new Cloudinary({
         cloud: {
@@ -79,20 +128,26 @@ const UserProfile: React.FC = () => {
 
     const myImage = cld.image(publicId).resize(thumbnail().width(450).height(450));
 
+    const hasChanges = () => {
+        if (!userData || !originalUserData) return false;
+        return JSON.stringify(userData) !== JSON.stringify(originalUserData);
+    };
+
     const renderMyInfo = () => {
         return (
             <div className='bg-white p-6 shadow-lg rounded-lg'>
                 <div className='grid grid-cols-2'>
                     <div className='col-span-1 row-span-full space-y-5'>
-                        {publicId ? 
+                        {publicId ?
                             (<AdvancedImage cldImg={myImage} />
-                        ) : (
-                            <div>
-                                <img src="https://static.vecteezy.com/system/resources/thumbnails/027/842/188/small_2x/user-ecommerce-icon-fill-style-png.png"/>
-                            </div>     
-                        )}
+                            ) : (
+                                <div>
+                                    <img src="https://static.vecteezy.com/system/resources/thumbnails/027/842/188/small_2x/user-ecommerce-icon-fill-style-png.png" />
+                                </div>
+                            )}
 
-                        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
+                        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} disabled={isEdit} />
+
                     </div>
                     <div className='col-span-1 space-y-2'>
                         <label className='block text-sm font-medium text-gray-800'>Nama Lengkap</label>
@@ -150,24 +205,28 @@ const UserProfile: React.FC = () => {
                             disabled={isEdit}
                         />
                         {!isEdit ? (
-                        <div className='flex flex-rows space-x-2'>
-                            <button className="btn btn-square mt-2" onClick={()=>setIsEdit(true)}>
-                              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Check"> <path id="Vector" d="M6 12L10.2426 16.2426L18.727 7.75732" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
-                            </button>
-                            <button className="btn btn-square mt-2" onClick={()=>setIsEdit(true)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                        </div>
-                        ):('')}
+                            <div className='flex flex-rows space-x-2'>
+                                <button
+                                    className="btn btn-square mt-2"
+                                    onClick={handleProfileUpdate}
+                                    disabled={!hasChanges()}
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Check"> <path id="Vector" d="M6 12L10.2426 16.2426L18.727 7.75732" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                                </button>
+                                <button className="btn btn-square mt-2" onClick={() => setIsEdit(true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                        ) : ('')}
                     </div>
                 </div>
                 <div className='flex flex-rows justify-center items-center h-full space-x-5 mt-8'>
-                        <button onClick={()=>setIsEdit(false)}>
-                            Edit Profile
-                        </button>
-                        <button onClick={()=>router.push('')}>
-                            Change Password
-                        </button>
+                    <button onClick={() => setIsEdit(false)}>
+                        Edit Profile
+                    </button>
+                    <button onClick={() => setIsPasswordModalOpen(true)}>
+                        Change Password
+                    </button>
                 </div>
             </div>
         );
@@ -180,9 +239,6 @@ const UserProfile: React.FC = () => {
         )
     }
 
-    if(!state.authenticated)
-        () => router.push('/auth')
-    
     return (
         <div className='flex min-h-screen bg-gray-100 pt-32'>
             <div className='w-64 p-5 bg-white'>
@@ -199,24 +255,29 @@ const UserProfile: React.FC = () => {
                         </button>
                     </li>
                     <li className='mb-2'>
-                        <button className="text-lg w-full text-left py-2 px-4 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 rounded-md" onClick={() => router.push('/logout')}>
-                            Keluar
+                        <button className="text-lg w-full text-left py-2 px-4 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 rounded-md">
+                            <LogoutButton/>
                         </button>
                     </li>
                 </ul>
             </div>
 
             {isSelected === 'MyInfo' ? (
-                    <div className='flex-grow p-10'>
-                        {renderMyInfo()}
-                    </div>
-                ) : (
-                    <div className='flex-grow p-10'>
-                        {renderMyOrder()}
-                    </div>
-                )}
-            </div>
+                <div className='flex-grow p-10'>
+                    {renderMyInfo()}
+                </div>
+            ) : (
+                <div className='flex-grow p-10'>
+                    {renderMyOrder()}
+                </div>
+            )}
 
+            <PasswordChangeModal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+                onSave={handleChangePassword}
+            />
+        </div>
     );
 }
 
