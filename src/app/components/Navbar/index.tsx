@@ -6,6 +6,7 @@ import React from "react";
 import { IoPersonCircleOutline, IoBagHandleOutline } from "react-icons/io5";
 import LogoutButton from "../LogoutButton";
 import { userContext } from "@/app/contexts/AuthContext";
+import GoToAuthButton from "../GoToAuthButton";
 
 interface NavLinkProps {
   href: string;
@@ -33,11 +34,6 @@ const Navbar = () => {
   const { state } = userContext();
 
   const pathname = usePathname();
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
 
   return (
     <nav className="fixed z-40 w-full bg-primary shadow-md">
@@ -56,7 +52,7 @@ const Navbar = () => {
         <div className="flex gap-4 md:gap-14 text-center items-center">
           <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
           <IoBagHandleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
-          {state.authenticated && <LogoutButton />}
+          {state.authenticated ? <LogoutButton /> : <GoToAuthButton />}
         </div>
       </div>
     </nav>
