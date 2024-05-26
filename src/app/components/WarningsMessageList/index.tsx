@@ -1,6 +1,10 @@
 import React from 'react';
 
-const WarningsMessage = ({ message }) => {
+type WarningsMessageProps = {
+    message: string;
+};
+
+const WarningsMessage: React.FC<WarningsMessageProps> = ({ message }) => {
     console.log("WarningsMessage rendered with message:", message);
     return (
         message ? <p>{message}</p> : null
