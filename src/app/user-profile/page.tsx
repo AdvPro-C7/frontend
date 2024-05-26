@@ -39,12 +39,12 @@ const UserProfile: React.FC = () => {
 
     const router = useRouter();
 
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // Loading state
     const [isSelected, setIsSelected] = useState('MyInfo');
     const [isEdit, setIsEdit] = useState(true);
 
     const fetchUser = async () => {
-        setIsLoaded(true);
+        setIsLoading(true); // Start loading
         try {
             const response = await fetch(`https://auth-hkqa74sxta-ew.a.run.app/get-user-details?uid=${state.email}`, {
                 headers: { 'Authorization': `Bearer ${state.authenticated}` }
@@ -53,19 +53,19 @@ const UserProfile: React.FC = () => {
                 const fetchedUser = await response.json();
                 setUserData(fetchedUser as UserProps);
                 setOriginalUserData(fetchedUser as UserProps);
+                setPublicId(fetchedUser.foto);
             } else {
                 throw new Error('Failed to fetch user data: ' + response.statusText);
             }
         } catch (error) {
             console.error("Failed to retrieve user data: ", error);
         } finally {
-            setIsLoaded(false);
+            setIsLoading(false); // Stop loading
         }
     }
 
     const encryptPassword = (input: string) => sha256(input).toString();
-
-    
+    console.log("User data: ", userData);
 
     const handleProfileUpdate = async () => {
         try {
@@ -151,7 +151,7 @@ const UserProfile: React.FC = () => {
                             placeholder={userData?.nama || 'Nama Lengkap'}
                             value={userData?.nama || ''}
                             onChange={e => handleInputChange('nama', e.target.value)}
-                            className='input input-bordered w-full max-w-md'
+                            className=' input input-bordered bg-white-100 text-black-100 w-full max-w-md'
                             disabled={isEdit}
                         />
                         <label className='block text-sm font-medium text-gray-800'>Email</label>
@@ -160,14 +160,14 @@ const UserProfile: React.FC = () => {
                             placeholder={userData?.email || 'Email'}
                             value={userData?.email || ''}
                             onChange={e => handleInputChange('email', e.target.value)}
-                            className='input input-bordered w-full max-w-md'
+                            className='bg-white-100 text-black-100 input input-bordered w-full max-w-md'
                             disabled={isEdit}
                         />
                         <label className='block text-sm font-medium text-gray-800'>Gender</label>
                         <select
                             value={userData?.jenisKelamin || ''}
                             onChange={e => handleInputChange('jenisKelamin', e.target.value)}
-                            className='input input-bordered w-full max-w-md'
+                            className='bg-white-100 text-black-100 input input-bordered w-full max-w-md'
                             disabled={isEdit}
                         >
                             <option value="Laki-Laki">Laki-Laki</option>
@@ -178,7 +178,7 @@ const UserProfile: React.FC = () => {
                             type="date"
                             value={userData?.tanggalLahir?.toISOString().slice(0, 10) || ''}
                             onChange={e => handleInputChange('tanggalLahir', new Date(e.target.value))}
-                            className='input input-bordered w-full max-w-md'
+                            className='bg-white-100 text-black-100 input input-bordered w-full max-w-md'
                             disabled={isEdit}
                         />
                         <label className='block text-sm font-medium text-gray-800'>No. Telp</label>
@@ -187,7 +187,7 @@ const UserProfile: React.FC = () => {
                             placeholder={userData?.noTelp || 'Nomor Telepon'}
                             value={userData?.noTelp || ''}
                             onChange={e => handleInputChange('noTelp', e.target.value)}
-                            className='input input-bordered w-full max-w-md'
+                            className='bg-white-100 text-black-100 input input-bordered w-full max-w-md'
                             disabled={isEdit}
                         />
                         <label className='block text-sm font-medium text-gray-800'>Bio</label>
@@ -196,7 +196,7 @@ const UserProfile: React.FC = () => {
                             placeholder={userData?.bio || 'Bio'}
                             value={userData?.bio || ''}
                             onChange={e => handleInputChange('bio', e.target.value)}
-                            className='input input-bordered w-full max-w-md'
+                            className='bg-white-100 text-black-100 input input-bordered w-full max-w-md'
                             disabled={isEdit}
                         />
                         {!isEdit ? (
@@ -237,7 +237,6 @@ const UserProfile: React.FC = () => {
     return (
         <div className='flex min-h-screen bg-gray-100 pt-32'>
             <div className='w-64 p-5 bg-white'>
-                {/* Sidebar */}
                 <ul>
                     <li className='mb-2'>
                         <button className="text-lg w-full text-left py-2 px-4 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 rounded-md" onClick={() => setIsSelected('MyOrder')}>
@@ -249,15 +248,14 @@ const UserProfile: React.FC = () => {
                             Akun Saya
                         </button>
                     </li>
-                    <li className='mb-2'>
-                        <button className="text-lg w-full text-left py-2 px-4 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 rounded-md">
-                            <LogoutButton/>
-                        </button>
-                    </li>
                 </ul>
             </div>
 
-            {isSelected === 'MyInfo' ? (
+            {isLoading ? (
+                <div className='flex-grow flex justify-center items-center'>
+                    <span className="loading loading-dots loading-lg"></span>
+                </div>
+            ) : isSelected === 'MyInfo' ? (
                 <div className='flex-grow p-10'>
                     {renderMyInfo()}
                 </div>
