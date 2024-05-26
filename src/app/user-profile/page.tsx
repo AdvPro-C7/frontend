@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { Cloudinary } from "@cloudinary/url-gen";
 import UploadWidget from '../components/UploadWidget';
-import { AdvancedImage } from '@cloudinary/react';
+import { AdvancedImage, placeholder, responsive } from '@cloudinary/react';
 import CloudinaryUploadWidget from '../components/UploadWidget';
 import { thumbnail } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
@@ -30,7 +30,7 @@ const UserProfile: React.FC = () => {
     const [userData, setUserData] = useState<UserProps | null>(null);
     const [originalUserData, setOriginalUserData] = useState<UserProps | null>(null);
     const { state } = userContext();
-    const [publicId, setPublicId] = useState("");
+    const [publicId, setPublicId] = useState(userData?.foto);
 
     const [cloudName] = useState("dzjfu0tcd");
     const [uploadPreset] = useState("ml_default");
@@ -110,8 +110,7 @@ const UserProfile: React.FC = () => {
             router.push('/auth');
         } else {
             fetchUser();
-            if (userData?.foto)
-                setPublicId(userData.foto);
+            setPublicId(userData?.foto ? userData.foto : publicId);
         }
     }, []);
 
@@ -126,11 +125,9 @@ const UserProfile: React.FC = () => {
         uploadPreset
     });
 
-    const myImage = cld.image(publicId).resize(thumbnail().width(450).height(450));
-
     const hasChanges = () => {
-        if (!userData || !originalUserData) return false;
-        return JSON.stringify(userData) !== JSON.stringify(originalUserData);
+        if (!userData || !originalUserData || !publicId) return false;
+        return (JSON.stringify(userData) !== JSON.stringify(originalUserData)) || publicId !== userData.foto;
     };
 
     const renderMyInfo = () => {
@@ -139,15 +136,13 @@ const UserProfile: React.FC = () => {
                 <div className='grid grid-cols-2'>
                     <div className='col-span-1 row-span-full space-y-5'>
                         {publicId ?
-                            (<AdvancedImage cldImg={myImage} />
+                            (<AdvancedImage cldImg={cld.image(publicId).resize(thumbnail().width(450).height(450))} />
                             ) : (
                                 <div>
                                     <img src="https://static.vecteezy.com/system/resources/thumbnails/027/842/188/small_2x/user-ecommerce-icon-fill-style-png.png" />
                                 </div>
                             )}
-
-                        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} disabled={isEdit} />
-
+                        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} disabled={isEdit}  />
                     </div>
                     <div className='col-span-1 space-y-2'>
                         <label className='block text-sm font-medium text-gray-800'>Nama Lengkap</label>
