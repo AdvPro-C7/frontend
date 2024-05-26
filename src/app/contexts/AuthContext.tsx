@@ -14,6 +14,7 @@ type User = {
     warningCount: number;
     authenticated: boolean;
     role: "customer" | "admin";
+    totalCartItems: number;
   };
   setState: React.Dispatch<React.SetStateAction<User["state"]>>;
 };
@@ -30,6 +31,7 @@ export const nullUser: User["state"] = {
   warningCount: 0,
   authenticated: false,
   role: "customer",
+  totalCartItems:0,
 };
 
 const UserContext = createContext<User>({

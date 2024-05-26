@@ -14,8 +14,9 @@ interface books {
 }
 
 const BookList: React.FC = () => {
-    const { state } = userContext();
+    const { state,setState } = userContext();
     const router = useRouter();
+    const userId = state.id
 
     const [bookData, setBookData] = useState<books[]>([]);
     const [searchQuery, setSearchQuery]  = useState("");
@@ -71,7 +72,45 @@ const BookList: React.FC = () => {
         }, 800);
         () => clearTimeout(timeOut);
     }, [isSelection]);
-   
+
+    useEffect(() => {
+        setIsLoading(true)
+        setIsSelection(false);
+        const timeOut = setTimeout(() => {
+            setIsLoading(false);
+            (sortType.length+searchQuery.length) == 0 ? pageLoad() : loadBooks();
+        }, 800);
+        () => clearTimeout(timeOut);
+    }, [isSelection]);
+
+    useEffect(() => {
+        fetchCartItems()
+    }, [state.totalCartItems]);
+    
+    const fetchCartItems = async () => {
+        try {
+            setIsLoading(true)
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/userCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setState(prevState => ({
+                    ...prevState,
+                    totalCartItems: data.cartItems.length,
+                }));
+                setIsLoading(false)
+            }
+        } catch (error) {
+            setIsLoading(false)
+            console.error('Failed to fetch cart items:', error);
+        }
+    };
 
     return (
         <>

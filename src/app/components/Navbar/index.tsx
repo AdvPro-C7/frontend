@@ -29,7 +29,7 @@ function NavLink({ href, isActive, children }: NavLinkProps) {
 
 const Navbar = () => {
   const router = useRouter();
-  const { state } = userContext();
+  const { state, setState } = userContext();
   const pathname = usePathname();
   const [totalCartItems, setTotalCartItems] = useState(0);
   const userId = state.id;
@@ -55,6 +55,10 @@ const Navbar = () => {
       if (response.ok) {
         const data = await response.json();
         setTotalCartItems(data.cartItems.length);
+        setState(prevState => ({
+          ...prevState,
+          totalCartItems: data.cartItems.length,
+        }));
       } else if (response.status === 404) {
         await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/createCart', {
           method: 'POST',
@@ -74,6 +78,10 @@ const Navbar = () => {
       fetchCartItems();
     }
   }, [state.authenticated]);
+
+  useEffect(() => {
+    setTotalCartItems(state.totalCartItems);
+  }, [state.totalCartItems]);
 
   return (
     <nav className="fixed z-40 w-full bg-primary shadow-md">

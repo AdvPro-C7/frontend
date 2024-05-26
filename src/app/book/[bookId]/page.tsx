@@ -7,6 +7,7 @@ import PopUpFormEditBook from "../../components/PopUpFormUpdateBook";
 import { BookDetailProps, BookDetailPropsForAdd } from '../../types/BookDetailProps';
 import { useRouter } from 'next/navigation';
 import { userContext } from '@/app/contexts/AuthContext';
+import { set } from '@cloudinary/url-gen/actions/variable';
 
 const DetailsBookPageView: React.FC = () => {
     const router = useRouter();
@@ -14,8 +15,8 @@ const DetailsBookPageView: React.FC = () => {
     const { bookId } = params;
     const [bookDetails, setBookDetails] = useState<BookDetailProps | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const { state } = userContext();
-
+    const { state, setState } = userContext();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         getData();
@@ -76,8 +77,10 @@ const DetailsBookPageView: React.FC = () => {
         }
     };
 
+
     const handleCart = async () => {
-        if (state.role == 'customer' || state.role == 'admin'){
+        if (state.role == 'customer' || state.role == 'admin') {
+            setIsLoading(true)
             try {
                 const quantity = 1;
                 const userId = state.id;
@@ -88,14 +91,20 @@ const DetailsBookPageView: React.FC = () => {
                     },
                     body: JSON.stringify({ userId, bookId, quantity }),
                 });
+                if (response.ok) {
+                    setIsLoading(false)
+                    router.push('/book-list');
+                }
             } catch (error) {
+                setIsLoading(false)
                 console.error('Error updating book details:', error);
             }
         } else {
+            setIsLoading(false)
             router.push("/auth")
         }
-       
-        
+
+
     };
 
     const handleDeleteBook = async () => {
@@ -139,14 +148,17 @@ const DetailsBookPageView: React.FC = () => {
                                             <p className='text-sm'>Sold: {bookDetails.sold}</p>
                                         </div>
                                     </div>
-                                    { state.role == 'admin' && (
-                                    <div className='flex space-x-5'>
-                                        <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
-                                        <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete Book</button>
-                                    </div>
+                                    {state.role == 'admin' && (
+                                        <div className='flex space-x-5'>
+                                            <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
+                                            <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete Book</button>
+                                        </div>
                                     )}
                                     <div className='flex space-x-5'>
-                                        <button className='btn btn-primary px-10 text-white-100' onClick={handleCart}>Add to chart</button>
+
+                                        {isLoading ? <span className="loading loading-dots loading-lg"></span> : <button className='btn btn-primary px-10 text-white-100' onClick={handleCart}>
+                                            Add to Cart                                    </button>}
+
                                         <button className='btn btn-secondary px-10 text-white-100' onClick={handleShare}>Share</button>
                                     </div>
                                 </div>
