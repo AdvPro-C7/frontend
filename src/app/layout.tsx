@@ -3,7 +3,6 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import { Nunito } from "next/font/google";
-
 export const metadata: Metadata = {
   title: "Buku.ID | Toko Buku Online Terlengkap di Indonesia",
   description: "Discover Worlds Between Pages",

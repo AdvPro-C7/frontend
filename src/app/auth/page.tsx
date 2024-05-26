@@ -166,7 +166,7 @@ export default function authPage() {
   };
 
   return (
-    <main>
+    <div className="w-full text-black-100 flex justify-center text-center item-center flex-col text-black p-36 py-40 min-h-screen">
       <div id="popup">
         <div className="popup-content">
           <span className="close-btn" onClick={closePupUp}>
@@ -191,6 +191,7 @@ export default function authPage() {
                 type="text"
                 id="reg-username"
                 name="username"
+                className="bg-white-100"
                 value={registrationForm.username}
                 onChange={handleRegistrationInputChange}
                 required
@@ -200,6 +201,7 @@ export default function authPage() {
                 type="text"
                 id="reg-email-address"
                 name="emailAddress"
+                className="bg-white-100"
                 value={registrationForm.emailAddress}
                 onChange={handleRegistrationInputChange}
                 required
@@ -209,6 +211,7 @@ export default function authPage() {
                 type="text"
                 id="reg-phone-number"
                 name="phoneNumber"
+                 className="bg-white-100"
                 value={registrationForm.phoneNumber}
                 onChange={handleRegistrationInputChange}
                 required
@@ -218,6 +221,7 @@ export default function authPage() {
                 type="password"
                 id="reg-password"
                 name="password"
+                 className="bg-white-100"
                 value={registrationForm.password}
                 onChange={handleRegistrationInputChange}
                 required
@@ -241,11 +245,12 @@ export default function authPage() {
           </div>
           <div id="login-content">
             <div className="form">
-              <label htmlFor="login-id">Email Address/Phone Number:</label>
+              <label className="text-left" htmlFor="login-id">Email Address/Phone Number:</label>
               <input
                 type="text"
                 id="login-id"
                 name="id"
+                 className="bg-white-100"
                 value={loginForm.id}
                 onChange={handleLoginInputChange}
                 required
@@ -255,6 +260,7 @@ export default function authPage() {
                 type="password"
                 id="login-password"
                 name="password"
+                 className="bg-white-100"
                 value={loginForm.password}
                 onChange={handleLoginInputChange}
                 required
@@ -270,6 +276,6 @@ export default function authPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

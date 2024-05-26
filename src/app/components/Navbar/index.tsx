@@ -32,8 +32,15 @@ function NavLink({ href, isActive, children }: NavLinkProps) {
 const Navbar = () => {
   const router = useRouter();
   const { state } = userContext();
-
   const pathname = usePathname();
+
+  const handleCartClick = () => {
+    if (state.authenticated) {
+      if(state.id){
+        router.push(`/cart/${state.id}`)
+      }
+    }
+  };
 
   return (
     <nav className="fixed z-40 w-full bg-primary shadow-md">
@@ -50,8 +57,14 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="flex gap-4 md:gap-14 text-center items-center">
-          <IoPersonCircleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" onClick={()=>router.push("/user-profile")}/>
-          <IoBagHandleOutline className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300" />
+          <IoPersonCircleOutline
+            className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300"
+            onClick={() => router.push("/user-profile")}
+          />
+          <IoBagHandleOutline
+            className={`text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300 ${state.authenticated ? "" : "opacity-50 pointer-events-none"}`}
+            onClick={handleCartClick}
+          />
           {state.authenticated ? <LogoutButton /> : <GoToAuthButton />}
         </div>
       </div>
