@@ -47,6 +47,10 @@ export default function authPage() {
   const { state, setState } = userContext();
   const router = useRouter();
 
+  useEffect(() => {
+    if (state.authenticated) router.push("/");
+  }, []);
+
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
     try {
       const response = await fetch(authServerDomain + endpoint, {
@@ -77,6 +81,7 @@ export default function authPage() {
           modifiedState.authenticated = true;
 
           setState(modifiedState);
+          localStorage.setItem("userState", JSON.stringify(modifiedState));
 
           router.push("/");
         }
@@ -192,7 +197,7 @@ export default function authPage() {
               <input
                 type="text"
                 id="reg-email-address"
-                name="email"
+                name="emailAddress"
                 value={registrationForm.emailAddress}
                 onChange={handleRegistrationInputChange}
                 required
