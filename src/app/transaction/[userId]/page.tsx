@@ -35,7 +35,7 @@ const Transaction: React.FC = () => {
     const fetchWaitingPayment = async () => {
         try {
             setLoadingFetch(true); // Set loading state to true before fetching
-            const response = await fetch('http://localhost:8080/api/order/waiting-payment', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/order/waiting-payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const Transaction: React.FC = () => {
 
     const handlePayment = async (orderId: number) => {
         try {
-            const response = await fetch('http://localhost:8080/api/order/pay', {
+            const response = await fetch('hhttps://functionality-hkqa74sxta-ew.a.run.app/api/order/pay', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const Transaction: React.FC = () => {
 
     const handleCancel = async (orderId: number) => {
         try {
-            const response = await fetch('http://localhost:8080/api/order/cancel', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/order/cancel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

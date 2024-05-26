@@ -19,7 +19,7 @@ export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/best-selling-books")
+    fetch("https://admin-hkqa74sxta-ew.a.run.app/api/best-selling-books")
       .then((response) => response.json())
       .then((data) => {
         setBooks(data.slice(0, 10));

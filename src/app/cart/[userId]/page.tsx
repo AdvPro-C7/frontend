@@ -26,7 +26,7 @@ const CartPage: React.FC = () => {
     const fetchCartItems = async () => {
         try {
             setLoadingFetch(true);
-            const response = await fetch('http://localhost:8080/api/customer/userCart', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/userCart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ const CartPage: React.FC = () => {
         const bookId = id;
         const quantity = 1;
         try {
-            const response = await fetch('http://localhost:8080/customer/addition', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/customer/addition', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ const CartPage: React.FC = () => {
         const bookId = id;
         const quantity = 1;
         try {
-            const response = await fetch('http://localhost:8080/api/customer/deduction', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/customer/deduction', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ const CartPage: React.FC = () => {
         const bookId = id;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/customer/cart/${bookId}`, {
+            const response = await fetch(`https://functionality-hkqa74sxta-ew.a.run.app/api/customer/cart/${bookId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const CartPage: React.FC = () => {
     const handleCheckout = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8080/api/order/placeOrder', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/order/placeOrder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
