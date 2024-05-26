@@ -5,8 +5,8 @@ import axios from 'axios';
 import { useParams } from "next/navigation";
 import PopUpFormEditBook from "../../components/PopUpFormUpdateBook";
 import { BookDetailProps, BookDetailPropsForAdd } from '../../types/BookDetailProps';
-import PopUpFormAddBook from '../../components/PopUpFormAddBook';
 import { useRouter } from 'next/navigation';
+import { userContext } from '@/app/contexts/AuthContext';
 
 const DetailsBookPageView: React.FC = () => {
     const router = useRouter();
@@ -14,25 +14,17 @@ const DetailsBookPageView: React.FC = () => {
     const { bookId } = params;
     const [bookDetails, setBookDetails] = useState<BookDetailProps | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isPopupOpenForAdd, setIsPopupOpenForAdd] = useState(false);
-    const [role, setRole] = useState<string | null>();
+    const { state } = userContext();
 
-    useEffect(() => {
-        const items = localStorage.getItem('role');
-        if (items) {
-            setRole(items);
-        }
-    }, []);
 
-    
     useEffect(() => {
         getData();
-    }, [role, bookId]);
+    }, [bookId]);
 
     const getData = async () => {
         try {
             console.log("fetching data");
-            const response = await axios.get(`http://localhost:8080/api/book-details/${bookId}`, {
+            const response = await axios.get(`https://admin-hkqa74sxta-ew.a.run.app/api/book-details/${bookId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -52,36 +44,15 @@ const DetailsBookPageView: React.FC = () => {
         setIsPopupOpen(false);
     };
 
-    const handleAddClick = () => {
-        setIsPopupOpenForAdd(true);
-    };
-
-    const handlePopupCloseAdd = () => {
-        setIsPopupOpenForAdd(false);
-    };
-
     const formatNumber = (number: number) => {
         return number.toLocaleString('id-ID');
     };
 
     const handleFormSubmitForEdit = async (data: BookDetailProps) => {
         try {
-            const response = await axios.put(`http://localhost:8080/api/book-details/${data.id}`, data);
+            const response = await axios.put(`https://admin-hkqa74sxta-ew.a.run.app/api/book-details/${data.id}`, data);
             console.log('Updated book details:', response.data);
             getData();
-        } catch (error) {
-            console.error('Error updating book details:', error);
-        }
-    };
-
-    const handleFormSubmitForAdd = async (data: BookDetailPropsForAdd) => {
-        try {
-            const response = await axios.post('http://localhost:8080/api/book-details', data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            console.log('Updated book details:', response.data);
         } catch (error) {
             console.error('Error updating book details:', error);
         }
@@ -97,7 +68,6 @@ const DetailsBookPageView: React.FC = () => {
                 console.log('Thanks for sharing!');
             }).catch(console.error);
         } else {
-            // Fallback: Copy URL to clipboard or provide other share options
             navigator.clipboard.writeText(window.location.href)
                 .then(() => {
                     alert('Link copied to clipboard!');
@@ -106,16 +76,20 @@ const DetailsBookPageView: React.FC = () => {
         }
     };
 
+    const handleCart = () => {
+        console.log("halo")
+    };
+
     const handleDeleteBook = async () => {
 
         if (bookDetails != null && bookDetails.sold > 0) {
             alert("Buku tidak dapat dihapus karena sudah pernah terjual.");
         } else {
             try {
-                const response = await axios.delete(`http://localhost:8080/api/book-details/${bookId}`, {
+                const response = await axios.delete(`https://admin-hkqa74sxta-ew.a.run.app/api/book-details/${bookId}`, {
                 });
                 console.log('Book deleted:', response.data);
-                router.push('/book/1'); // Redirect to book list page after deletion
+                router.push('/book-list'); // Redirect to book list page after deletion
             } catch (error) {
                 console.error('Error deleting book:', error);
             }
@@ -147,22 +121,16 @@ const DetailsBookPageView: React.FC = () => {
                                             <p className='text-sm'>Sold: {bookDetails.sold}</p>
                                         </div>
                                     </div>
-                                    { role == 'admin' && (
-                                        <div className='flex space-x-5'>
-                                            <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
-                                            <button className='btn btn-accent px-10 text-white-100' onClick={handleAddClick}>Add</button>
-                                            <button className='btn btn-secondary px-10 text-white-100' onClick={handleShare}>Share</button>
-                                            <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete Book</button>
-                                        </div>
+                                    { state.role == 'admin' && (
+                                    <div className='flex space-x-5'>
+                                        <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
+                                        <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete Book</button>
+                                    </div>
                                     )}
-                                    { role == 'pelanggan' && (
-                                        <div className='flex space-x-5'>
-                                            <button className='btn btn-primary px-10 text-white-100' onClick={handleEditClick}>Edit</button>
-                                            <button className='btn btn-accent px-10 text-white-100' onClick={handleAddClick}>Add</button>
-                                            <button className='btn btn-secondary px-10 text-white-100' onClick={handleShare}>Share</button>
-                                            <button onClick={handleDeleteBook} className='btn btn-secondary px-10 text-white-100'>Delete</button>
-                                        </div>
-                                    )}
+                                    <div className='flex space-x-5'>
+                                        <button className='btn btn-primary px-10 text-white-100' onClick={handleCart}>Add to chart</button>
+                                        <button className='btn btn-secondary px-10 text-white-100' onClick={handleShare}>Share</button>
+                                    </div>
                                 </div>
                                 <div className='flex flex-col mt-10 '>
                                     <p className='font-bold text-gray-600'>Deskripsi Buku</p>
@@ -209,12 +177,6 @@ const DetailsBookPageView: React.FC = () => {
                     bookDetails={bookDetails as BookDetailProps}
                     onClose={handlePopupClose}
                     onSubmit={handleFormSubmitForEdit}
-                />
-            )}
-             {isPopupOpenForAdd && (
-                <PopUpFormAddBook
-                    onClose={handlePopupCloseAdd}
-                    onSubmit={handleFormSubmitForAdd}
                 />
             )}
         </div>

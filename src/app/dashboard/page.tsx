@@ -1,6 +1,11 @@
 "use client"
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { BookDetailProps, BookDetailPropsForAdd } from '../types/BookDetailProps';
+import PopUpFormAddBook from '../components/PopUpFormAddBook';
+import { useRouter  } from 'next/navigation';
+
+
 
 interface Book {
     id: number;
@@ -22,6 +27,8 @@ const dashboard: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+    const [isPopupOpenForAdd, setIsPopupOpenForAdd] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         axios.get<Book[]>('http://localhost:8087/api/book-details')
@@ -55,10 +62,43 @@ const dashboard: React.FC = () => {
             .then(response => setSelectedCustomer(response.data))
             .catch(error => console.error('Error fetching customer profile:', error));
     };
+    
+    const handlePopupCloseAdd = () => {
+        setIsPopupOpenForAdd(false);
+    };
+
+    const handleFormSubmitForAdd = async (data: BookDetailPropsForAdd) => {
+        try {
+            const response = await axios.post('https://admin-hkqa74sxta-ew.a.run.app/api/book-details', data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('Updated book details:', response.data);
+        } catch (error) {
+            console.error('Error updating book details:', error);
+        }
+    };
+
+    const handleAddClick = () => {
+        setIsPopupOpenForAdd(true);
+    };
+
+    const handleSearchClick = () => {
+        router.push("dashboard/search")
+    };
 
     return (
        <div className="w-full text-black-100 flex justify-left text-left flex-col text-black p-36 py-8 min-h-screen">
+        <div className='flex'>
             <h1 className="text-4xl font-semibold mb-4 mt-40">Dashboard</h1>
+        </div>
+        <div className='flex space-x-4'>
+            <button className='btn btn-accent px-10 text-white-100' onClick={handleAddClick}>Add Book</button>
+            <button className='btn btn-primary px-10 text-white-100' onClick={handleSearchClick}>Search user</button>
+        </div>
+            
+            
 
             <h2 className="text-xl font-semibold mb-2 mt-10">Books</h2>
             <table className="min-w-full bg-white border border-gray-300 mb-10">
@@ -153,7 +193,15 @@ const dashboard: React.FC = () => {
                     <p><strong>Warnings:</strong> {selectedCustomer.warnings}</p>
                 </div>
             )}
+
+            {isPopupOpenForAdd && (
+                <PopUpFormAddBook
+                    onClose={handlePopupCloseAdd}
+                    onSubmit={handleFormSubmitForAdd}
+                />
+            )}
         </div>
+         
     );
 };
 
