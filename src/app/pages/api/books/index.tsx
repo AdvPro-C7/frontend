@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse, NextApiHandler } from 'next';
 import Cors from 'cors';
 
 const cors = Cors({
@@ -8,16 +8,16 @@ const cors = Cors({
     optionsSuccessStatus: 200, 
   });
   
-  function runMiddleware(req, res, fn) {
-    return new Promise((resolve, reject) => {
-      fn(req, res, (result) => {
-        if (result instanceof Error) {
-          return reject(result);
-        }
-        return resolve(result);
-      });
+  function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: (req: NextApiRequest, res: NextApiResponse, callback: (err?: any) => void) => void) {
+    return new Promise<void>((resolve, reject) => {
+        fn(req, res, (err?: any) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve();
+        });
     });
-  }
+}
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     await runMiddleware(req, res, cors);
@@ -26,7 +26,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     switch (method) {
         case 'GET':
             try {
-                const response = await axios.get('http://localhost:8080/api/book-details/');
+                const response = await axios.get('http://localhost:8087/api/book-details/');
                 res.status(200).json(response.data);
             } catch (error) {
                 res.status(500).json({ message: 'Error fetching books' });

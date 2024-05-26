@@ -8,7 +8,7 @@ const Dashboard = () => {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:8087/api/book/')
+        axios.get('http://localhost:8087/api/book-details/')
             .then(response => setBooks(response.data || [])) 
             .catch(error => console.error('Error fetching books:', error));
 
@@ -18,7 +18,7 @@ const Dashboard = () => {
     }, []);
 
     const deleteBook = (id) => {
-        axios.delete(`http://localhost:8087/api/book/${id}`)
+        axios.delete(`http://localhost:8087/api/book-details/${id}`)
             .then(() => setBooks(books.filter(book => book.id !== id)))
             .catch(error => console.error('Error deleting book:', error));
     };
