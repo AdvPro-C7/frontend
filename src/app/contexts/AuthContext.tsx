@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
   state: {
+    id: number | null;
     name: string;
     sex: "" | "male" | "female";
     photoLink: string;
@@ -18,6 +19,7 @@ type User = {
 };
 
 export const nullUser: User["state"] = {
+  id: null,
   name: "",
   sex: "",
   photoLink: "",

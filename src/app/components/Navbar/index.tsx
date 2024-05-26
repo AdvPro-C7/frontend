@@ -37,7 +37,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed z-40 w-full bg-primary shadow-md">
-      <div className="flex justify-between items-center mx-12 py-4 md:mx-24">
+      <div className="flex justify-between items-center mx-12 py-2 md:mx-24">
         <div className="flex items-center">
           <NavLink href="/" isActive={pathname === "/"}>
             <Image
