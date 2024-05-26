@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-
-const nunito = Nunito({ subsets: ['latin'], display: 'fallback' });
+import { AuthContextProvider } from "./contexts/AuthContext";
+import { Nunito } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: "Buku.ID | Toko Buku Online Terlengkap di Indonesia",
   description: "Discover Worlds Between Pages",
 };
+
+const nunito = Nunito({ subsets: ['latin'], display: 'fallback' });
 
 export default function RootLayout({
   children,
@@ -15,11 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body  className={nunito.className}>
-
-        <Navbar />
-       <main className="bg-primary min-h-screen">{children}</main>
+    <html lang="en">  
+        <body  className={nunito.className}>
+        <Toaster />
+        <AuthContextProvider>
+          <Navbar />
+          <main className="bg-primary min-h-screen">{children}</main>
+          <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
+        </AuthContextProvider>
       </body>
     </html>
   );
