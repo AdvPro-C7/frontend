@@ -73,7 +73,7 @@ const History: React.FC = () => {
             {data && data.length > 0 ? (
                 data.map(order => (
                     <div key={order.id} className="mb-10 bg-white shadow-md rounded-lg p-6">
-                        <h2 className="text-2xl font-bold mb-2">Tanggal Order: {new Date(order.orderDate).toLocaleDateString()}</h2>
+                        <h2 className="text-2xl font-bold mb-2">Tanggal: {new Date(order.orderDate).toLocaleDateString()}</h2>
                         <p className="text-lg">Status: <span className={`font-semibold ${order.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}`}>{order.status}</span></p>
                         <p className="text-lg">Total Harga: <span className="font-semibold">${order.totalPrice}</span></p>
 

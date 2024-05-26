@@ -105,7 +105,7 @@ const Navbar = () => {
               className={`text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300 ${state.authenticated ? "" : "opacity-50 pointer-events-none"}`}
               onClick={handleCartClick}
             />
-            {totalCartItems > 0 && (
+            {totalCartItems >= 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white-100 rounded-full w-6 h-5 flex items-center justify-center text-xs">
                 {totalCartItems}
               </span>

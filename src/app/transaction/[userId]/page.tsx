@@ -122,7 +122,6 @@ const Transaction: React.FC = () => {
             <h1 className="text-gray-800 font-semibold text-4xl mb-6">Your Payments</h1>
 
             {loading && <p className="text-xl">Loading...</p>}
-            {error && <p className="text-xl text-red-500">Error: {error}</p>}
             {data && data.length > 0 ? (
                 data.map(order => (
                     <div key={order.id} className="mb-10 bg-white shadow-md rounded-lg p-6">
