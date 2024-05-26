@@ -77,19 +77,18 @@ const UserProfile: React.FC = () => {
         uploadPreset
     });
 
-    const myImage = cld.image(publicId).resize(thumbnail().width(300).height(300));
+    const myImage = cld.image(publicId).resize(thumbnail().width(450).height(450));
 
     const renderMyInfo = () => {
         return (
             <div className='bg-white p-6 shadow-lg rounded-lg'>
                 <div className='grid grid-cols-2'>
-                    <div className='col-span-1 row-span-full'>
+                    <div className='col-span-1 row-span-full space-y-5'>
                         {publicId ? 
                             (<AdvancedImage cldImg={myImage} />
                         ) : (
                             <div>
                                 <img src="https://static.vecteezy.com/system/resources/thumbnails/027/842/188/small_2x/user-ecommerce-icon-fill-style-png.png"/>
-                                <label className='block text-sm font-medium text-gray-800'>Upload Profile</label>
                             </div>     
                         )}
 
