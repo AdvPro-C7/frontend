@@ -47,12 +47,14 @@ export default function authPage() {
   const { state, setState } = userContext();
   const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (state.authenticated) router.push("/");
   }, []);
 
   async function handleSubmit(endpoint: string, data: Record<string, any>) {
-    console.log("Submitting data:", data);
+    setLoading(true);
     try {
       const response = await fetch(authServerDomain + endpoint, {
         method: "POST",
@@ -84,7 +86,7 @@ export default function authPage() {
 
           setState(modifiedState);
           localStorage.setItem("userState", JSON.stringify(modifiedState));
-
+          setLoading(false);
           router.push("/");
         }
       } else {
@@ -92,7 +94,7 @@ export default function authPage() {
       }
     } catch (error) {
       console.error("Error:", error);
-
+      setLoading(false);
       togglePopUp("An error occurred.");
     }
   }
@@ -139,6 +141,7 @@ export default function authPage() {
       id: id,
       password: encryptedPassword,
     });
+
   };
 
   const handleRegistrationSubmit = async () => {
@@ -155,6 +158,7 @@ export default function authPage() {
         phoneNumber: phoneNumber,
         password: encryptedPassword,
       });
+      
     }
 
     setRegistrationForm((_) => ({
@@ -211,7 +215,7 @@ export default function authPage() {
                 type="text"
                 id="reg-phone-number"
                 name="phoneNumber"
-                 className="bg-white-100"
+                className="bg-white-100"
                 value={registrationForm.phoneNumber}
                 onChange={handleRegistrationInputChange}
                 required
@@ -221,7 +225,7 @@ export default function authPage() {
                 type="password"
                 id="reg-password"
                 name="password"
-                 className="bg-white-100"
+                className="bg-white-100"
                 value={registrationForm.password}
                 onChange={handleRegistrationInputChange}
                 required
@@ -230,8 +234,9 @@ export default function authPage() {
                 type="button"
                 id="reg-submit-btn"
                 onClick={handleRegistrationSubmit}
+                disabled={loading} // Disable button when loading
               >
-                Submit
+                {loading ? 'Loading...' : 'Submit'}
               </button>
             </div>
           </div>
@@ -250,7 +255,7 @@ export default function authPage() {
                 type="text"
                 id="login-id"
                 name="id"
-                 className="bg-white-100"
+                className="bg-white-100"
                 value={loginForm.id}
                 onChange={handleLoginInputChange}
                 required
@@ -260,18 +265,20 @@ export default function authPage() {
                 type="password"
                 id="login-password"
                 name="password"
-                 className="bg-white-100"
+                className="bg-white-100"
                 value={loginForm.password}
                 onChange={handleLoginInputChange}
                 required
               />
-              <button
-                type="button"
-                id="login-submit-btn"
-                onClick={handleLoginSubmit}
-              >
-                Submit
-              </button>
+              {loading ?
+
+                <span className="loading loading-dots loading-lg"></span> : <button
+                  type="button"
+                  id="login-submit-btn"
+                  onClick={handleLoginSubmit}
+                  disabled={loading}
+
+                >'Submit'</button>}
             </div>
           </div>
         </div>

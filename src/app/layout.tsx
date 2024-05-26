@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import { Nunito } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: "Buku.ID | Toko Buku Online Terlengkap di Indonesia",
   description: "Discover Worlds Between Pages",
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">  
         <body  className={nunito.className}>
+        <Toaster />
         <AuthContextProvider>
           <Navbar />
           <main className="bg-primary min-h-screen">{children}</main>

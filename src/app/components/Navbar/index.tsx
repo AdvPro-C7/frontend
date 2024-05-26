@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoPersonCircleOutline, IoBagHandleOutline } from "react-icons/io5";
 import LogoutButton from "../LogoutButton";
 import { userContext } from "@/app/contexts/AuthContext";
@@ -17,11 +16,10 @@ interface NavLinkProps {
 function NavLink({ href, isActive, children }: NavLinkProps) {
   return (
     <a
-      className={`transition-opacity px-3 py-1 rounded-full ${
-        isActive
-          ? "active underline font-bold bg-red-primary hover:opacity-70"
-          : "hover:text-red-primary"
-      } `}
+      className={`transition-opacity px-3 py-1 rounded-full ${isActive
+        ? "active underline font-bold bg-red-primary hover:opacity-70"
+        : "hover:text-red-primary"
+        } `}
       href={href}
     >
       {children}
@@ -33,14 +31,49 @@ const Navbar = () => {
   const router = useRouter();
   const { state } = userContext();
   const pathname = usePathname();
+  const [totalCartItems, setTotalCartItems] = useState(0);
+  const userId = state.id;
 
   const handleCartClick = () => {
     if (state.authenticated) {
-      if(state.id){
-        router.push(`/cart/${state.id}`)
+      if (userId) {
+        router.push(`/cart/${userId}`);
       }
     }
   };
+
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/customer/userCart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setTotalCartItems(data.cartItems.length);
+      } else if (response.status === 404) {
+        await fetch('http://localhost:8080/api/customer/createCart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }),
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch cart items:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (state.authenticated) {
+      fetchCartItems();
+    }
+  }, [state.authenticated]);
 
   return (
     <nav className="fixed z-40 w-full bg-primary shadow-md">
@@ -57,14 +90,27 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="flex gap-4 md:gap-14 text-center items-center">
+          <NavLink href={`/history/${userId}`} isActive={pathname === `/history/${userId}`}>
+            Pesanan Saya
+          </NavLink>
+          <NavLink href={`/transaction/${userId}`} isActive={pathname === `/transaction/${userId}`}>
+            Belum Bayar
+          </NavLink>
           <IoPersonCircleOutline
             className="text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300"
             onClick={() => router.push("/user-profile")}
           />
-          <IoBagHandleOutline
-            className={`text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300 ${state.authenticated ? "" : "opacity-50 pointer-events-none"}`}
-            onClick={handleCartClick}
-          />
+          <div className="relative">
+            <IoBagHandleOutline
+              className={`text-blue-100 text-3xl md:text-4xl cursor-pointer hover:text-blue-300 ${state.authenticated ? "" : "opacity-50 pointer-events-none"}`}
+              onClick={handleCartClick}
+            />
+            {totalCartItems > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white-100 rounded-full w-6 h-5 flex items-center justify-center text-xs">
+                {totalCartItems}
+              </span>
+            )}
+          </div>
           {state.authenticated ? <LogoutButton /> : <GoToAuthButton />}
         </div>
       </div>

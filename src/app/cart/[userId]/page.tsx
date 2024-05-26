@@ -2,8 +2,7 @@
 import { userContext } from '@/app/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { FaTrash } from 'react-icons/fa';
-
+import { FaTrash } from 'react-icons/fa';;
 export interface Book {
     bookId: number;
     bookTitle: string;
@@ -17,13 +16,10 @@ const CartPage: React.FC = () => {
     const [cartItems, setCartItems] = useState<Book[]>([]);
     const router = useRouter();
     const [totalPrice, setTotalPrice] = useState<number>(0.0);
-    const [orderId, setOrderId] = useState<number>(0);
     const [shippingAddress, setShippingAddress] = useState<string>('');
-
-
-
-
-    const userId = 3;
+    const { state } = userContext();
+    const [loading, setLoading] = useState(false);
+    const userId = state.id;
     const fetchCartItems = async () => {
         try {
             const response = await fetch('http://localhost:8080/api/customer/userCart', {
@@ -36,7 +32,6 @@ const CartPage: React.FC = () => {
             if (response.ok) {
                 const data = await response.json();
                 setTotalPrice(data.totalPrice);
-                setOrderId(data.id);
                 setCartItems(data.cartItems);
             } else {
                 console.error('Failed to fetch cart items:', response.statusText);
@@ -111,9 +106,10 @@ const CartPage: React.FC = () => {
         }
     };
 
-    const handleCheckout = async (id: number) => {
+    const handleCheckout = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/customer/placeOrder', {
+            setLoading(true);
+            const response = await fetch('http://localhost:8080/api/order/placeOrder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,11 +118,13 @@ const CartPage: React.FC = () => {
             });
 
             if (!response.ok) {
+                setLoading(false);
                 throw new Error(`Failed to checkout: ${response.statusText}`);
             }
-
+            setLoading(false);
             router.push(`/transaction/${userId}`);
         } catch (error) {
+            setLoading(false);
             console.error('Failed to checkout:', error);
         }
     }
@@ -181,19 +179,22 @@ const CartPage: React.FC = () => {
                                     onChange={(e) => setShippingAddress(e.target.value)}
                                 />
                             </div>
-                            <button
-                                onClick={() => {
-                                    if (shippingAddress.trim() !== '') {
-                                        handleCheckout(orderId);
-                                    } else {
-                                        alert('Please enter a shipping address.');
-                                    }
-                                }}
-                                className={`text-white-100 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-green-600 ${shippingAddress.trim() === '' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                disabled={shippingAddress.trim() === ''}
-                            >
-                                Checkout
-                            </button>
+                            {loading ?
+
+                                <span className="loading loading-dots loading-lg"></span> : <button
+                                    onClick={() => {
+                                        if (shippingAddress.trim() !== '') {
+                                            handleCheckout();
+                                        } else {
+                                            alert('Please enter a shipping address.');
+                                        }
+                                    }}
+                                    className={`text-white-100 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-green-600 ${shippingAddress.trim() === '' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    disabled={shippingAddress.trim() === ''}
+                                >
+                                    Checkout
+                                </button>}
+
                         </div>
                     </div>
                 </div>

@@ -24,7 +24,7 @@ interface Order {
     cartItems: CartItem[];
 }
 
-const Transaction: React.FC = () => {
+const History: React.FC = () => {
     const { state } = userContext();
     const userId = state.id;
     const [data, setData] = useState<Order[]>([]);
@@ -34,7 +34,7 @@ const Transaction: React.FC = () => {
 
     const fetchWaitingPayment = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/order/waiting-payment', {
+            const response = await fetch('http://localhost:8080/api/order/waiting-shipping', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,85 +65,18 @@ const Transaction: React.FC = () => {
         }));
     };
 
-    const handlePayment = async (orderId: number) => {
-        
-        try {
-            const response = await fetch('http://localhost:8080/api/order/pay', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId, orderId }),
-            });
-
-            if (!response.ok) {
-                toast.error('Payment failed');
-                throw new Error(`Failed to pay: ${response.statusText}`);
-            }
-            else {
-                toast.success('Payment success');
-                fetchWaitingPayment()
-            }
-
-        } catch (error) {
-            console.error('Failed to pay:', error);
-        }
-
-    };
-
-    const handleCancel = async (orderId: number) => {
-        
-        try {
-            const response = await fetch('http://localhost:8080/api/order/cancel', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId, orderId }),
-            });
-
-            if (!response.ok) {
-                toast.error('Cancel failed');
-                throw new Error(`Failed to cancel: ${response.statusText}`);
-            }
-            else {
-                toast.success('Cancel success');
-                fetchWaitingPayment()
-            }
-
-        } catch (error) {
-            console.error('Failed to pay:', error);
-        }
-
-    };
-
     return (
         <div className="w-full text-gray-800 flex justify-left text-left flex-col p-28 py-40 min-h-screen bg-gray-100">
-            <h1 className="text-gray-800 font-semibold text-4xl mb-6">Your Payments</h1>
-
+            <h1 className="text-gray-800 font-semibold text-4xl mb-6">Pesanan Saya</h1>
+            {error && toast.error(error)}
             {loading && <p className="text-xl">Loading...</p>}
-            {error && <p className="text-xl text-red-500">Error: {error}</p>}
             {data && data.length > 0 ? (
                 data.map(order => (
                     <div key={order.id} className="mb-10 bg-white shadow-md rounded-lg p-6">
                         <h2 className="text-2xl font-bold mb-2">Tanggal Order: {new Date(order.orderDate).toLocaleDateString()}</h2>
                         <p className="text-lg">Status: <span className={`font-semibold ${order.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}`}>{order.status}</span></p>
                         <p className="text-lg">Total Harga: <span className="font-semibold">${order.totalPrice}</span></p>
-                        <div className="flex flex-row gap-3 py-4 w-1/4">
 
-                        <button
-                            onClick={() => handlePayment(order.id)}
-                            className="w-2/5 bg-blue-100 text-white-100  border-none px-4 py-2 rounded hover:bg-blue-500"
-                        >
-                            Bayar Sekarang
-                        </button>
-                        <button
-                            onClick={() => handleCancel(order.id)}
-                            className="w-2/5 btn bg-red-500 border-none text-white-100 px-4 py-2 rounded "
-                        >
-                            Cancel
-                        </button>
-                        </div>
                         <div className="mt-6">
                             <h3 className="text-xl font-semibold mb-4 flex justify-between items-center cursor-pointer" onClick={() => toggleDropdown(order.id)}>
                                 Cart Items
@@ -179,4 +112,4 @@ const Transaction: React.FC = () => {
     );
 }
 
-export default Transaction;
+export default History;
