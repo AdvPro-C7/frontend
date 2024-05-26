@@ -8,7 +8,7 @@ const Dashboard = () => {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:8087/api/book-details/')
+        axios.get('http://localhost:8087/api/book-details')
             .then(response => setBooks(response.data || [])) 
             .catch(error => console.error('Error fetching books:', error));
 
