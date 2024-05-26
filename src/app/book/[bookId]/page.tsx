@@ -76,8 +76,26 @@ const DetailsBookPageView: React.FC = () => {
         }
     };
 
-    const handleCart = () => {
-        console.log("halo")
+    const handleCart = async () => {
+        if (state.role == 'customer' || state.role == 'admin'){
+            try {
+                const quantity = 1;
+                const userId = state.id;
+                const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId, bookId, quantity }),
+                });
+            } catch (error) {
+                console.error('Error updating book details:', error);
+            }
+        } else {
+            router.push("/auth")
+        }
+       
+        
     };
 
     const handleDeleteBook = async () => {
