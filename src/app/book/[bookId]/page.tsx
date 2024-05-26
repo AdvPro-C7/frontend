@@ -91,6 +91,7 @@ const DetailsBookPageView: React.FC = () => {
                     },
                     body: JSON.stringify({ userId, bookId, quantity }),
                 });
+
                 if (response.ok) {
                     setIsLoading(false)
                     router.push('/book-list');
