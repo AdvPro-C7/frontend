@@ -29,7 +29,6 @@ const UserProfile: React.FC = () => {
 
     const [cloudName] = useState("dzjfu0tcd");
     const [uploadPreset] = useState("ml_default");
-    const [uploadedFileUrl, setUploadedFileUrl] = useState('');
 
     const router = useRouter();
 
@@ -62,13 +61,7 @@ const UserProfile: React.FC = () => {
             [key]: value,
         } as UserProps));
     };
-
-    const handleUploadComplete = (url: React.SetStateAction<string>) => {
-        setUploadedFileUrl(url);
-        console.log('Uploaded file URL:', url);
-    };
     
-
     useEffect(() => {
         fetchUser();
     }, [state.authenticated]);
