@@ -124,8 +124,8 @@ const Transaction: React.FC = () => {
             <h1 className="text-gray-800 font-semibold text-4xl mb-6">Your Payments</h1>
 
             {loadingFetch ? (
-                <div className='flex justify-center text-center items-center h-full'>
-                    <span className="loading loading-dots loading-lg"></span>
+                <div className="w-full text-black-100 flex text-center items-center  flex-col text-black p-36 py-40 min-h-screen">
+                <span className="loading loading-dots loading-lg"></span>
                 </div>
             ) : (
                 data && data.length > 0 ? (

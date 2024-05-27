@@ -239,11 +239,6 @@ const UserProfile: React.FC = () => {
             <div className='w-64 p-5 bg-white'>
                 <ul>
                     <li className='mb-2'>
-                        <button className="text-lg w-full text-left py-2 px-4 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 rounded-md" onClick={() => setIsSelected('MyOrder')}>
-                            Pesanan Saya
-                        </button>
-                    </li>
-                    <li className='mb-2'>
                         <button className="text-lg w-full text-left py-2 px-4 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 rounded-md" onClick={() => setIsSelected('MyInfo')}>
                             Akun Saya
                         </button>

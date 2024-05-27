@@ -33,7 +33,7 @@ const History: React.FC = () => {
 
     const fetchWaitingPayment = async () => {
         try {
-            setLoadingFetch(true); 
+            setLoadingFetch(true);
             const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/order/waiting-shipping', {
                 method: 'POST',
                 headers: {
@@ -44,13 +44,13 @@ const History: React.FC = () => {
             if (response.ok) {
                 const data: Order[] = await response.json();
                 setData(data);
-                setLoadingFetch(false); 
+                setLoadingFetch(false);
             } else {
-                setLoadingFetch(false); 
+                setLoadingFetch(false);
                 throw new Error('Failed to fetch payment: ' + response.statusText);
             }
         } catch (error: any) {
-            setLoadingFetch(false); 
+            setLoadingFetch(false);
             setError(error.message);
         } finally {
             setLoadingFetch(false);
@@ -71,9 +71,9 @@ const History: React.FC = () => {
     return (
         <div className="w-full text-gray-800 flex justify-left text-left flex-col p-28 py-40 min-h-screen bg-gray-100">
             <h1 className="text-gray-800 font-semibold text-4xl mb-6">Pesanan Saya</h1>
-            {loadingFetch ? ( 
-                <div className="w-full text-black-100 flex justify-center text-center items-center  flex-col text-black p-36 py-40 min-h-screen">
-                    <span className="loading loading-dots text-blue-100 loading-lg"></span>
+            {loadingFetch ? (
+                <div className="w-full text-black-100 flex text-center items-center  flex-col text-black p-36 py-40 min-h-screen">
+                    <span className="loading loading-dots loading-lg"></span>
                 </div>
             ) : (
                 data && data.length > 0 ? (
