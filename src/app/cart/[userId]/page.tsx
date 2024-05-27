@@ -139,7 +139,7 @@ const CartPage: React.FC = () => {
 
     return (
         <div className="w-full text-gray-800 flex justify-left text-left flex-col p-28 py-40 min-h-screen bg-gray-100">
-            <h1 className="text-gray-800 font-semibold text-4xl mb-6">Keranjang Belanja</h1>
+            <h1 className="text-gray-800 font-semibold text-4xl text-left mb-6">Keranjang Belanja</h1>
 
             {loadingFetch ? (
                 <div className="w-full text-black-100 flex justify-center items-center flex-col p-36 py-40 min-h-screen">

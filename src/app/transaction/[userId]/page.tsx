@@ -68,7 +68,7 @@ const Transaction: React.FC = () => {
 
     const handlePayment = async (orderId: number) => {
         try {
-            const response = await fetch('hhttps://functionality-hkqa74sxta-ew.a.run.app/api/order/pay', {
+            const response = await fetch('https://functionality-hkqa74sxta-ew.a.run.app/api/order/pay', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -121,13 +121,13 @@ const Transaction: React.FC = () => {
                         <h2 className="text-2xl font-bold mb-2">Order Date: {new Date(order.orderDate).toLocaleDateString()}</h2>
                         <p className="text-lg">Status: <span className={`font-semibold ${order.status === 'Pending' ? 'text-yellow-600' : 'text-green-600'}`}>{order.status}</span></p>
                         <p className="text-lg">Total Price: <span className="font-semibold">${order.totalPrice}</span></p>
-                        <div className="flex flex-row gap-3 py-4">
+                        <div className="flex w-1/5 flex-row gap-3 py-4">
 
                             <button
                                 onClick={() => handlePayment(order.id)}
                                 className="w-2/4 rounded-lg bg-blue-500 text-white px-2 py-2 hover:bg-blue-700"
                             >
-                                Pay Now
+                                Bayar Sekarang
                             </button>
                             <button
                                 onClick={() => handleCancel(order.id)}
